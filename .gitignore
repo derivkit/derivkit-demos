@@ -1,0 +1,5 @@
+git reset.ipynb_checkpoints/
+__pycache__/
+.DS_Store
+data/*.fits
+data/*.h5
