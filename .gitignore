@@ -4,3 +4,22 @@ __pycache__/
 data/*.fits
 data/*.h5
 .idea/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.env/
+.ipynb_checkpoints/
+
+# notebooks artifacts
+notebooks/*-output/
+notebooks/.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# data
+data/raw/
+data/interim/
+data/processed/

@@ -209,9 +209,7 @@ class PlotKit:
                 label=label,
             )
 
-        plt.xlabel(
-            rf"$\hat{{f}}^{ ({self.derivative_order}) }(x_0)$", fontsize=15
-        )
+        plt.xlabel(rf"$\hat{{f}}^{ ({self.derivative_order}) }(x_0)$", fontsize=15)
         plt.ylabel("density", fontsize=15)
         plt.legend(frameon=True, loc="upper left", framealpha=0.6)
         if title is not None:
@@ -353,12 +351,8 @@ class PlotKit:
             plt.title(title, fontsize=17)
         plt.legend(frameon=True, fontsize=14, loc="best", framealpha=0.5)
         extra = f"_{extra_info}" if extra_info else ""
-        self.h.save_fig(
-            f"adaptive_fit_with_noise_order{derivative_order}{extra}.pdf"
-        )
-        self.h.save_fig(
-            f"adaptive_fit_with_noise_order{derivative_order}{extra}.png"
-        )
+        self.h.save_fig(f"adaptive_fit_with_noise_order{derivative_order}{extra}.pdf")
+        self.h.save_fig(f"adaptive_fit_with_noise_order{derivative_order}{extra}.png")
         plt.show()
 
     def plot_error_vs_noise(
@@ -411,9 +405,7 @@ class PlotKit:
                     derivative_order=derivative_order,
                     stepsize=0.01 * (abs(self.central_value) or 1.0),
                 )
-                ad_est = kit.adaptive.compute(
-                    derivative_order=derivative_order
-                )
+                ad_est = kit.adaptive.compute(derivative_order=derivative_order)
 
                 st_errs.append((st_est - true_val) ** 2)
                 ad_errs.append((ad_est - true_val) ** 2)
@@ -465,12 +457,8 @@ class PlotKit:
             color=self.colors["central"],
             ms=10,
         )
-        ax2.axhline(
-            0.0, linestyle="--", color=self.colors["excluded"], linewidth=1.2
-        )
-        ylabel = (
-            r"$\frac{\mathrm{MSE}^\mathrm{A}}{\mathrm{MSE}^\mathrm{F}} - 1$"
-        )
+        ax2.axhline(0.0, linestyle="--", color=self.colors["excluded"], linewidth=1.2)
+        ylabel = r"$\frac{\mathrm{MSE}^\mathrm{A}}{\mathrm{MSE}^\mathrm{F}} - 1$"
         ax2.set_ylabel(ylabel, fontsize=15)
         ax2.set_xlabel("noise standard deviation", fontsize=15)
         ax2.set_ylim(-1.2, 0.3)  # set limits to show the ratio clearly
@@ -481,17 +469,11 @@ class PlotKit:
         if title is not None:
             fig.suptitle(title, fontsize=17, y=0.95)
         extra = f"_{extra_info}" if extra_info else ""
-        self.h.save_fig(
-            f"error_vs_noise_order{self.derivative_order}{extra}.pdf"
-        )
-        self.h.save_fig(
-            f"error_vs_noise_order{self.derivative_order}{extra}.png"
-        )
+        self.h.save_fig(f"error_vs_noise_order{self.derivative_order}{extra}.pdf")
+        self.h.save_fig(f"error_vs_noise_order{self.derivative_order}{extra}.png")
         plt.show()
 
-    def plot_ecdf_errors(
-        self, noise_std=0.01, trials=200, title=None, extra_info=None
-    ):
+    def plot_ecdf_errors(self, noise_std=0.01, trials=200, title=None, extra_info=None):
         """Plot empirical cumulative distribution functions (ECDFs) of squared errors.
 
         This method compares the distribution of squared errors from finite difference and
@@ -613,8 +595,7 @@ class PlotKit:
                 - true_val
             )
             e_a = (
-                kit.adaptive.compute(derivative_order=self.derivative_order)
-                - true_val
+                kit.adaptive.compute(derivative_order=self.derivative_order) - true_val
             )
             diffs.append(e_a**2 - e_f**2)  # Δ (adaptive − finite)
 
@@ -673,9 +654,7 @@ class PlotKit:
                 zorder=3,
             )
 
-        ax.scatter(
-            [], [], c="white", label=f"$\\widehat P(\\Delta<0)={p:.2f}$"
-        )
+        ax.scatter([], [], c="white", label=f"$\\widehat P(\\Delta<0)={p:.2f}$")
         ax.set_xlabel("paired trials (jittered $x$)", fontsize=17)
         ax.set_ylabel("$e^2_\\mathrm{A} - e^2_\\mathrm{F}$", fontsize=17)
         ax.set_xticks([])
@@ -684,12 +663,8 @@ class PlotKit:
             plt.title(title, fontsize=17)
         ax.legend(frameon=True, loc="lower left", fontsize=15)
         extra = f"_{extra_info}" if extra_info else ""
-        self.h.save_fig(
-            f"paired_differences_order{self.derivative_order}{extra}.pdf"
-        )
-        self.h.save_fig(
-            f"paired_differences_order{self.derivative_order}{extra}.png"
-        )
+        self.h.save_fig(f"paired_differences_order{self.derivative_order}{extra}.pdf")
+        self.h.save_fig(f"paired_differences_order{self.derivative_order}{extra}.png")
         plt.show()
 
 
@@ -815,9 +790,7 @@ def plot_multi_order_error_vs_noise(
 
     # Plot finite and adaptive for each order
     for order in orders:
-        label_deriv = (
-            f"$\\mathrm{{d}}^{{{order}}}f/\\mathrm{{d}}x^{{{order}}}$"
-        )
+        label_deriv = f"$\\mathrm{{d}}^{{{order}}}f/\\mathrm{{d}}x^{{{order}}}$"
 
         plt.plot(
             inv_snr,
@@ -851,12 +824,8 @@ def plot_multi_order_error_vs_noise(
 
     extra = f"_{extra_info}" if extra_info else ""
     os.makedirs(plot_dir, exist_ok=True)
-    plt.savefig(
-        os.path.join(plot_dir, f"multi_order_error_vs_snr{extra}.pdf"), dpi=300
-    )
-    plt.savefig(
-        os.path.join(plot_dir, f"multi_order_error_vs_snr{extra}.png"), dpi=300
-    )
+    plt.savefig(os.path.join(plot_dir, f"multi_order_error_vs_snr{extra}.pdf"), dpi=300)
+    plt.savefig(os.path.join(plot_dir, f"multi_order_error_vs_snr{extra}.png"), dpi=300)
     plt.show()
 
 
@@ -898,9 +867,7 @@ def make_slow_func(sleep_time):
     return lambda x: slow_function(x, sleep_time)
 
 
-def plot_timing_for_order(
-    order, sleep_times, timings_adaptive, timings_finite
-):
+def plot_timing_for_order(order, sleep_times, timings_adaptive, timings_finite):
     """Plot timing benchmarks comparing adaptive and finite difference methods.
 
     The comparison is plotted for a given derivative order as a function of
@@ -1131,9 +1098,7 @@ def plot_adaptive_timing_sweeps(
             kit.adaptive.fit_tolerance = fit_tolerance_fixed
             kit.adaptive.min_used_points = min_pts
             start = perf_counter()
-            _ = kit.adaptive.compute(
-                derivative_order=order, n_workers=n_workers
-            )
+            _ = kit.adaptive.compute(derivative_order=order, n_workers=n_workers)
             timings_minpts[order].append(perf_counter() - start)
 
     for order in deriv_orders:
@@ -1143,9 +1108,7 @@ def plot_adaptive_timing_sweeps(
             kit.adaptive.fit_tolerance = tol
             kit.adaptive.min_used_points = min_used_points_fixed
             start = perf_counter()
-            _ = kit.adaptive.compute(
-                derivative_order=order, n_workers=n_workers
-            )
+            _ = kit.adaptive.compute(derivative_order=order, n_workers=n_workers)
 
             timings_tol[order].append(perf_counter() - start)
 
@@ -1332,18 +1295,14 @@ def plot_function_with_residuals(
     # 2. Residuals
     ax2.axhline(0, ls="--", color=colors["central"], lw=lw)
     ax2.plot(x, resid_adapt, label="adaptive", color=colors["adaptive"], lw=lw)
-    ax2.plot(
-        x, resid_finite, label="finite", color=colors["finite"], lw=lw, ls=":"
-    )
+    ax2.plot(x, resid_finite, label="finite", color=colors["finite"], lw=lw, ls=":")
     ax2.set_ylabel(r"$f(x) - T(x)$", fontsize=fs)
     ax2.legend(fontsize=fs - 2)
 
     # 3. Fractional residuals
     ax3.axhline(0, ls="--", color=colors["central"], lw=lw)
     ax3.plot(x, frac_adapt, label="adaptive", color=colors["adaptive"], lw=lw)
-    ax3.plot(
-        x, frac_finite, label="finite", color=colors["finite"], lw=lw, ls=":"
-    )
+    ax3.plot(x, frac_finite, label="finite", color=colors["finite"], lw=lw, ls=":")
     ax3.set_ylabel(r"$\frac{f(x) - T(x)}{f(x)}$", fontsize=fs)
     if not show_ratio_panel:
         ax3.set_xlabel("evaluation point $x$", fontsize=fs)
@@ -1352,9 +1311,7 @@ def plot_function_with_residuals(
     # 4. Ratio panel
     if show_ratio_panel:
         ax4.axhline(0, ls="--", color=colors["central"], lw=lw)
-        ax4.plot(
-            x, ratio - 1, color="lightgray", lw=lw, label=r"adaptive / finite"
-        )
+        ax4.plot(x, ratio - 1, color="lightgray", lw=lw, label=r"adaptive / finite")
         ax4.set_ylabel(r"frac. ratio", fontsize=fs)
         ax4.set_xlabel("evaluation point $x$", fontsize=fs)
         ax4.legend(fontsize=fs - 2)
@@ -1362,9 +1319,7 @@ def plot_function_with_residuals(
     plt.tight_layout()
     plt.subplots_adjust(hspace=0.03)
     if function_name is not None:
-        fname = (
-            f"function_with_residuals_{function_name}_order{derivative_order}"
-        )
+        fname = f"function_with_residuals_{function_name}_order{derivative_order}"
     if save_fig:
         fig.savefig(f"plots/{fname}.pdf", dpi=300)
         fig.savefig(f"plots/{fname}.png", dpi=300)
