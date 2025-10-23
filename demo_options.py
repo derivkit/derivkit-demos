@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Adaptive-fit demo using DerivKit (minimal):
+Adaptive-fit demo using DerivKit (minimal, new API):
 
-A) default spacing (spacing="auto", DerivKit builds a symmetric grid around x0)
-B) user-defined spacing (explicit ABSOLUTE x positions with use_physical_grid=True)
+A) default spacing (spacing="auto" or a float half-width) built around x0
+B) user-defined spacing via grid=("absolute", x_abs)
 """
 
 from __future__ import annotations
@@ -32,16 +32,16 @@ except Exception:
     DEFAULT_COLORS = {
         "adaptive": "#3b82f6",
         "adaptive_lite": "#60a5fa",
-        "finite": "#10b981",
+        "forecasts": "#10b981",
         "samples": "#10b981",  # alias if your palette lacks "samples"
         "central": "#a855f7",
         "x0": "#a855f7",
-        "red": "#dc2626",  # fallback red
+        "red": "#dc2626",
         "danger": "#dc2626",
     }
 
 # --- robust color aliases (works with any palette keys) ---
-SAMPLES_COLOR = DEFAULT_COLORS.get("samples", DEFAULT_COLORS.get("finite", "#10b981"))
+SAMPLES_COLOR = DEFAULT_COLORS.get("samples", DEFAULT_COLORS.get("forecasts", "#10b981"))
 ADAPTIVE_COLOR = DEFAULT_COLORS.get("adaptive", "#3b82f6")
 CENTRAL_RED = DEFAULT_COLORS.get("danger", DEFAULT_COLORS.get("red", "#dc2626"))
 
@@ -62,22 +62,32 @@ def make_noisy(f, sigma=0.02, seed=42):
     return g
 
 
-# ---------- DerivKit helpers ----------
-def slope_default(f, x0, order=1, *, n_points=25, spacing="auto"):
-    """Derivative with DerivKit's default/adaptive spacing."""
+# ---------- DerivKit helpers (NEW API) ----------
+def slope_default(f, x0, order=1, *, n_points=25, spacing="auto", base_abs=1e-3):
+    """
+    Derivative with DerivKit's default/adaptive spacing (new API).
+    """
     dk = DerivativeKit(f, x0)
     val = dk.adaptive.differentiate(
-        order, n_points=int(n_points), spacing=spacing, direction="both"
+        order,
+        n_points=int(n_points),
+        spacing=spacing,     # "auto" | float | "2%"
+        base_abs=base_abs,   # floor for small-x regions (useful near x0≈0)
+        # domain=None, ridge=0.0, diagnostics=False ...
     )
     return float(np.asarray(val).ravel()[0])
 
 
 def slope_user_grid(f, x0, order=1, *, x_abs):
-    """Derivative on a user-provided ABSOLUTE x grid (non-uniform allowed)."""
+    """
+    Derivative on a user-provided ABSOLUTE x grid.
+    Use grid=("absolute", x_abs) per new API.
+    """
     x_abs = np.asarray(x_abs, float)
     dk = DerivativeKit(f, x0)
     val = dk.adaptive.differentiate(
-        order, n_points=int(len(x_abs)), spacing=x_abs, use_physical_grid=True
+        order,
+        grid=("absolute", x_abs),  # n_points ignored when grid is provided
     )
     return float(np.asarray(val).ravel()[0])
 
@@ -92,10 +102,8 @@ def format_pm(val: float, err: float) -> str:
     err = abs(float(err))
     if err == 0 or not np.isfinite(err):
         return f"{val:.6g} ± 0"
-    # number of significant figures for error
     leading = int(f"{err:.1e}".split("e")[0].replace(".", "").lstrip("0")[:1] or "1")
     sig_err = 2 if leading == 1 else 1
-    # decimal places from exponent
     exp = int(np.floor(np.log10(err)))
     decimals = max(0, -(exp) + (sig_err - 1))
     val_r = round(val, decimals)
@@ -107,12 +115,16 @@ def format_pm(val: float, err: float) -> str:
 def main():
     apply_plot_style()
 
-    # knobs
+    # --- knobs (wider spacing + a few more points) ---
     x0 = 0.30
-    n_points = 25
+    n_points = 25  # Chebyshev cap in this branch is ~30
     noise = 0.01
     order = 1
     true_a, true_b = 1.7, -0.2
+
+    # use a *wider* default half-width for the adaptive grid to improve conditioning
+    DEFAULT_SPACING = 0.30  # absolute half-width around x0
+    BASE_ABS = 1e-3         # floor near small x0 (kept same)
 
     # noisy linear target
     f = make_noisy(lambda x: f_clean(x, a=true_a, b=true_b), sigma=noise, seed=42)
@@ -122,30 +134,17 @@ def main():
     W_plot = (n_points - 1) * delta_vis
     xx = np.linspace(x0 - W_plot, x0 + W_plot, 800)
 
-    # Symmetric custom grid with tighter points near x0
-    t_custom = np.array(
-        [
-            -0.10,
-            -0.06,
-            -0.03,
-            -0.015,
-            -0.007,
-            -0.003,
-            0.0,
-            0.003,
-            0.007,
-            0.015,
-            0.03,
-            0.06,
-            0.10,
-        ],
-        dtype=float,
-    )
+    # Symmetric custom grid with tighter points near x0, but WIDER overall and MORE nodes
+    # (tanh gives central crowding, endpoints reach ±DEFAULT_SPACING)
+    t_custom = DEFAULT_SPACING * np.tanh(np.linspace(-2.0, 2.0, n_points)).astype(float)
     x_custom = x0 + t_custom
 
-    # ----- compute derivatives -----
-    d_default = slope_default(f, x0, order=order, n_points=n_points, spacing="auto")
+    # ----- compute derivatives (use wider spacing for default) -----
+    d_default = slope_default(
+        f, x0, order=order, n_points=n_points, spacing=DEFAULT_SPACING, base_abs=BASE_ABS
+    )
     d_usergrid = slope_user_grid(f, x0, order=order, x_abs=x_custom)
+
     true_slope = true_a
 
     # pseudo-uncertainty for demo (distance to truth; for real work use bootstrap/diagnostics)
@@ -160,7 +159,7 @@ def main():
     # ----- plotting -----
     fig, axs = plt.subplots(1, 2, figsize=(10.8, 5.0), constrained_layout=True)
 
-    # Panel A: default spacing (auto)
+    # Panel A: default spacing (wider half-width)
     ax = axs[0]
     ax.plot(
         xx,
@@ -171,15 +170,7 @@ def main():
         label="true $f(x)$",
     )
     ax.scatter(x_vis, y_vis, s=80, color=SAMPLES_COLOR, label="samples (viz)", zorder=3)
-    ax.scatter(
-        [x0],
-        [f(x0)],
-        s=120,
-        color=CENTRAL_RED,
-        edgecolor="none",
-        label="$x_0$",
-        zorder=4,
-    )
+    ax.scatter([x0], [f(x0)], s=120, color=CENTRAL_RED, edgecolor="none", label="$x_0$", zorder=4)
     ax.plot(
         xx,
         f(x0) + d_default * (xx - x0),
@@ -187,7 +178,7 @@ def main():
         color=ADAPTIVE_COLOR,
         label="slope @ $x_0$",
     )
-    ax.set_title("A · default spacing (auto)")
+    ax.set_title("A · default spacing (wider half-width)")
     ax.set_xlabel("x")
     ax.set_ylabel("f(x)")
     ax.text(
@@ -209,23 +200,8 @@ def main():
         color=MID_GRAY,
         label="true $f(x)$",
     )
-    ax.scatter(
-        x_custom,
-        y_custom,
-        s=90,
-        color=SAMPLES_COLOR,
-        label="user grid samples",
-        zorder=3,
-    )
-    ax.scatter(
-        [x0],
-        [f(x0)],
-        s=120,
-        color=CENTRAL_RED,
-        edgecolor="none",
-        label="$x_0$",
-        zorder=4,
-    )
+    ax.scatter(x_custom, y_custom, s=90, color=SAMPLES_COLOR, label="user grid samples", zorder=3)
+    ax.scatter([x0], [f(x0)], s=120, color=CENTRAL_RED, edgecolor="none", label="$x_0$", zorder=4)
     ax.plot(
         xx,
         f(x0) + d_usergrid * (xx - x0),

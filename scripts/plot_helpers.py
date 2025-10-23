@@ -54,7 +54,7 @@ class PlotHelpers:
         os.makedirs(self.plot_dir, exist_ok=True)
 
     def get_noisy_derivatives(self, derivative_order, noise_std=0.01, trials=100):
-        """Compute derivative estimates across multiple noisy trials using finite, adaptive, and Numdifftools methods.
+        """Compute derivative estimates across multiple noisy trials using forecasts, adaptive, and Numdifftools methods.
 
         Args:
             derivative_order : int
@@ -91,13 +91,13 @@ class PlotHelpers:
         return finite_vals, adaptive_vals, nd_vals
 
     def run_derivative_trials_with_noise(
-        self, method="finite", order=1, noise_std=0.01, trials=100
+        self, method="forecasts", order=1, noise_std=0.01, trials=100
     ):
         """Run repeated derivative estimation trials with a specified method and added noise.
 
         Args:
             method : str
-                One of {"finite", "adaptive", "numdifftools"}.
+                One of {"forecasts", "adaptive", "numdifftools"}.
             order : int
                 Derivative order to compute.
             noise_std : float
@@ -113,7 +113,7 @@ class PlotHelpers:
         for i in range(trials):
             noisy_f = self.make_additive_noise_function(noise_std=noise_std, seed=i)
 
-            if method == "finite":
+            if method == "forecasts":
                 # set h comparable to adaptive's default first offset: 1% of |x0|
                 fd_h = (
                     0.01 * abs(self.central_value) if self.central_value != 0 else 0.01

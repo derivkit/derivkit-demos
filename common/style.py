@@ -3,10 +3,17 @@
 import matplotlib as mpl
 from cycler import cycler
 
+__all__ = [
+    "apply_plot_style",
+    "DEFAULT_COLORS",
+    "DEFAULT_FONTSIZE",
+    "DEFAULT_LINEWIDTH",
+    "DEFAULT_MARKERSIZE"
+]
+
 DEFAULT_LINEWIDTH = 1.5
 DEFAULT_FONTSIZE = 15
 DEFAULT_MARKERSIZE = 10
-
 DEFAULT_COLORS = {
     "blue": "#3b9ab2",
     "yellow": "#e1af00",
@@ -15,16 +22,16 @@ DEFAULT_COLORS = {
 
 def _rgba(hex_color: str, alpha: float) -> tuple:
     c = mpl.colors.to_rgba(hex_color)
-    return (c[0], c[1], c[2], alpha)
+    return c[0], c[1], c[2], alpha
 
-def apply_plot_style(*, base: str | None = None):
-    """
-    Apply a unified, monochrome-blue style.
-
-    Args:
-        base: hex/string color for the theme. Defaults to DEFAULT_COLORS["blue"].
-    """
+def apply_plot_style(*, base: str | None = None,
+                     linewidth: float | None = None,
+                     fontsize: int | None = None,
+                     markersize: int | None = None):
     base = base or DEFAULT_COLORS["blue"]
+    linewidth  = linewidth  if linewidth  is not None else DEFAULT_LINEWIDTH
+    fontsize   = fontsize   if fontsize   is not None else DEFAULT_FONTSIZE
+    markersize = markersize if markersize is not None else DEFAULT_MARKERSIZE
 
     blue_strong = _rgba(base, 1.00)  # lines, labels, ticks, edges
     blue_medium = _rgba(base, 0.85)  # axes spine, legend edge
@@ -36,13 +43,13 @@ def apply_plot_style(*, base: str | None = None):
             "text.usetex": False,
             "font.family": "sans-serif",
             "font.sans-serif": ["DejaVu Sans"],
-            "font.size": DEFAULT_FONTSIZE,          # global base size
-            "axes.titlesize": DEFAULT_FONTSIZE,     # axes title
-            "axes.labelsize": DEFAULT_FONTSIZE,     # x/y labels
-            "xtick.labelsize": DEFAULT_FONTSIZE - 1,
-            "ytick.labelsize": DEFAULT_FONTSIZE - 1,
-            "legend.fontsize": DEFAULT_FONTSIZE - 1,
-            "legend.title_fontsize": DEFAULT_FONTSIZE,
+            "font.size": fontsize,          # global base size
+            "axes.titlesize": fontsize,     # axes title
+            "axes.labelsize": fontsize,     # x/y labels
+            "xtick.labelsize": fontsize - 1,
+            "ytick.labelsize": fontsize - 1,
+            "legend.fontsize": fontsize - 1,
+            "legend.title_fontsize": fontsize,
             "mathtext.fontset": "dejavusans",
             "mathtext.default": "it",
             "mathtext.rm": "DejaVu Sans",
@@ -54,8 +61,8 @@ def apply_plot_style(*, base: str | None = None):
             "axes.prop_cycle": cycler(color=[base]),
 
             # ---- line/marker defaults ----
-            "lines.linewidth": DEFAULT_LINEWIDTH,
-            "lines.markersize": DEFAULT_MARKERSIZE,
+            "lines.linewidth": linewidth,
+            "lines.markersize": markersize,
             "lines.marker": "none",
             "lines.markeredgewidth": 0.8,
 

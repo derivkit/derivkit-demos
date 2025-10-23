@@ -26,11 +26,11 @@ class PlotKit:
     """A high-level plotting utility for evaluating and comparing numerical derivative methods.
 
     This class provides multiple plotting routines to assess the accuracy and behavior of
-    finite difference and adaptive polynomial fit derivative estimates under noisy conditions.
+    forecasts difference and adaptive polynomial fit derivative estimates under noisy conditions.
 
     Attributes:
         derivs : DerivativeKit
-            Internal instance used to compute derivatives using both finite and adaptive methods.
+            Internal instance used to compute derivatives using both forecasts and adaptive methods.
         h : PlotHelpers
             Helper instance used for diagnostics, noise injection, and figure saving.
         seed : int
@@ -65,7 +65,7 @@ class PlotKit:
             linewidth : float, optional
                 Line width to use for plots. Uses default style if not specified.
             colors : dict, optional
-                A dictionary of color overrides keyed by method name (e.g., 'finite', 'adaptive').
+                A dictionary of color overrides keyed by method name (e.g., 'forecasts', 'adaptive').
             gradient_colors : dict, optional
                 Optional color map or overrides for gradients or tolerance bands.
             true_derivative_fn : callable, optional
@@ -99,7 +99,7 @@ class PlotKit:
 
         Args:
             key : str
-                Identifier for the color key (e.g., 'finite', 'adaptive', 'central', etc.).
+                Identifier for the color key (e.g., 'forecasts', 'adaptive', 'central', etc.).
 
         Returns:
             str
@@ -127,7 +127,7 @@ class PlotKit:
         repeated noisy evaluations.
 
         This method runs multiple trials of noisy function evaluations,
-        computes the derivative using both the finite difference and
+        computes the derivative using both the forecasts difference and
         adaptive fitting methods, and plots their empiricala distributions
         overlaid as histograms.
 
@@ -182,7 +182,7 @@ class PlotKit:
         _, var_s = np.mean(stencil_vals), np.var(stencil_vals, ddof=1)
         _, var_a = np.mean(adaptive_vals), np.var(adaptive_vals, ddof=1)
 
-        label_stencil = f"finite: $s^2$={var_s:.2f}"
+        label_stencil = f"forecasts: $s^2$={var_s:.2f}"
         label_adaptive = f"adaptive: $s^2$={var_a:.2f}"
 
         labels = [label_stencil, label_adaptive]
@@ -302,7 +302,7 @@ class PlotKit:
             x_all[excluded_mask],
             y_all[excluded_mask],
             label="excluded from fit",
-            color=self.colors["finite"],
+            color=self.colors["forecasts"],
             s=markersize,
             zorder=3,
         )
@@ -365,10 +365,10 @@ class PlotKit:
     ):
         """Plot mean squared error (MSE) of derivative estimates vs. noise level.
 
-        This method evaluates both finite difference and adaptive derivative estimators
+        This method evaluates both forecasts difference and adaptive derivative estimators
         across a range of Gaussian noise standard deviations. It plots:
         - MSE vs. noise level (log scale)
-        - Relative difference between adaptive and finite MSEs
+        - Relative difference between adaptive and forecasts MSEs
 
         Args:
             derivative_order : int
@@ -429,9 +429,9 @@ class PlotKit:
         ax1.plot(
             noise_levels,
             stencil_mse,
-            label="finite",
+            label="forecasts",
             marker="o",
-            color=self.colors["finite"],
+            color=self.colors["forecasts"],
             ms=10,
         )
         ax1.plot(
@@ -476,7 +476,7 @@ class PlotKit:
     def plot_ecdf_errors(self, noise_std=0.01, trials=200, title=None, extra_info=None):
         """Plot empirical cumulative distribution functions (ECDFs) of squared errors.
 
-        This method compares the distribution of squared errors from finite difference and
+        This method compares the distribution of squared errors from forecasts difference and
         adaptive derivative estimators by plotting their ECDFs under repeated noisy evaluations.
 
         Args:
@@ -524,8 +524,8 @@ class PlotKit:
             x1,
             y1,
             "o-",
-            label="finite",
-            color=self.color("finite"),
+            label="forecasts",
+            color=self.color("forecasts"),
             lw=self.lw,
             markersize=ms,
         )
@@ -552,10 +552,10 @@ class PlotKit:
     def plot_paired_error_differences(
         self, noise_std=0.01, trials=200, title=None, extra_info=None
     ):
-        """Plot paired squared error differences between adaptive and finite methods.
+        """Plot paired squared error differences between adaptive and forecasts methods.
 
         This method runs repeated noisy derivative trials and computes the squared error
-        for both adaptive and finite difference methods. It then plots the pairwise
+        for both adaptive and forecasts difference methods. It then plots the pairwise
         differences: Δ = error²_adaptive − error²_finite.
 
         Points are jittered horizontally to show density and grouped into:
@@ -597,11 +597,11 @@ class PlotKit:
             e_a = (
                 kit.adaptive.compute(derivative_order=self.derivative_order) - true_val
             )
-            diffs.append(e_a**2 - e_f**2)  # Δ (adaptive − finite)
+            diffs.append(e_a**2 - e_f**2)  # Δ (adaptive − forecasts)
 
         diffs = np.asarray(diffs, dtype=float)
         m_ad = diffs < 0  # adaptive wins (below 0)
-        m_fin = diffs > 0  # finite wins (above 0)
+        m_fin = diffs > 0  # forecasts wins (above 0)
         m_tie = diffs == 0  # ties (rare)
 
         # Win rate; count ties as half-wins (optional)
@@ -630,8 +630,8 @@ class PlotKit:
             diffs[m_fin],
             s=markersize,
             alpha=0.9,
-            color=self.color("finite"),
-            label=f"finite better $(n = {n_fin})$",
+            color=self.color("forecasts"),
+            label=f"forecasts better $(n = {n_fin})$",
             zorder=3,
         )
         ax.scatter(
@@ -687,7 +687,7 @@ def plot_multi_order_error_vs_noise(
     determined for multiple derivative orders and estimation methods.
 
     The function injects Gaussian noise into the target function, scaled inversely
-    with SNR and proportionally to |f(x)|. It compares the performance of finite
+    with SNR and proportionally to |f(x)|. It compares the performance of forecasts
     difference and adaptive polynomial fitting methods.
 
     Args:
@@ -715,7 +715,7 @@ def plot_multi_order_error_vs_noise(
     Notes:
     ------
     - Uses a fixed random seed for reproducibility.
-    - Derivatives are computed using both finite differences and adaptive polynomial fitting.
+    - Derivatives are computed using both forecasts differences and adaptive polynomial fitting.
     - Noise is scaled as: `sigma = max(|f(x)|, 1e-3) / SNR` to avoid division by very small amplitudes.
     - Plots MSE vs. 1/SNR on log-log axes for interpretability.
     """
@@ -788,7 +788,7 @@ def plot_multi_order_error_vs_noise(
     colors = GRADIENT_COLORS
     ms = 10
 
-    # Plot finite and adaptive for each order
+    # Plot forecasts and adaptive for each order
     for order in orders:
         label_deriv = f"$\\mathrm{{d}}^{{{order}}}f/\\mathrm{{d}}x^{{{order}}}$"
 
@@ -798,7 +798,7 @@ def plot_multi_order_error_vs_noise(
             linestyle="-",
             marker="o",
             ms=ms,
-            label=f"finite {label_deriv}",
+            label=f"forecasts {label_deriv}",
             color=colors[f"finite_{order}"],
         )
 
@@ -868,7 +868,7 @@ def make_slow_func(sleep_time):
 
 
 def plot_timing_for_order(order, sleep_times, timings_adaptive, timings_finite):
-    """Plot timing benchmarks comparing adaptive and finite difference methods.
+    """Plot timing benchmarks comparing adaptive and forecasts difference methods.
 
     The comparison is plotted for a given derivative order as a function of
     simulated function evaluation time.
@@ -877,7 +877,7 @@ def plot_timing_for_order(order, sleep_times, timings_adaptive, timings_finite):
     `timings_finite`, which store timing results for various derivative orders,
     as well as `sleep_times`, a list of simulated function evaluation times.
     It fits a linear model to each method's timing data, computes the slowdown
-    factor of the adaptive method relative to finite differences, and visualizes
+    factor of the adaptive method relative to forecasts differences, and visualizes
     the timing comparison.
 
     Args:
@@ -888,7 +888,7 @@ def plot_timing_for_order(order, sleep_times, timings_adaptive, timings_finite):
         timings_adaptive : dict
             Dictionary containing timing results for the adaptive method, keyed by derivative order.
         timings_finite : dict
-            Dictionary containing timing results for the finite difference method, keyed by derivative order.
+            Dictionary containing timing results for the forecasts difference method, keyed by derivative order.
     """
     x = np.array(sleep_times)
     y_adaptive = np.array(timings_adaptive[order])
@@ -936,16 +936,16 @@ def plot_timing_for_order(order, sleep_times, timings_adaptive, timings_finite):
 def benchmark_derivative_timing_vs_order(
     function, central_value, orders, stencil_points=5, stencil_stepsize=0.01
 ):
-    """Benchmark and plot the evaluation time of adaptive vs. finite differences.
+    """Benchmark and plot the evaluation time of adaptive vs. forecasts differences.
 
     The benchmarking is done for derivative estimation methods across multiple
     derivative orders.
 
     This function measures and compares the runtime of the `DerivativeKit`'s
-    adaptive and finite difference methods for computing derivatives of the
+    adaptive and forecasts difference methods for computing derivatives of the
     provided function at a given point, over a range of derivative orders.
     It generates a plot showing how the evaluation time scales with derivative order
-    and the relative slowdown of adaptive vs. finite difference.
+    and the relative slowdown of adaptive vs. forecasts difference.
 
     Args:
         function : callable
@@ -955,9 +955,9 @@ def benchmark_derivative_timing_vs_order(
         orders : list of int
             The derivative orders to benchmark.
         stencil_points: int, optional
-            Number of stencil points to use for the finite difference method (default is 5).
+            Number of stencil points to use for the forecasts difference method (default is 5).
         stencil_stepsize: float, optional
-            Step size for the finite difference stencil (default is 0.01).
+            Step size for the forecasts difference stencil (default is 0.01).
     """
     adaptive_times = []
     finite_times = []
@@ -970,7 +970,7 @@ def benchmark_derivative_timing_vs_order(
         _ = kit.adaptive.compute(derivative_order=order)
         adaptive_times.append(perf_counter() - start)
 
-        # Time finite difference method
+        # Time forecasts difference method
         start = perf_counter()
         _ = kit.finite.compute(
             derivative_order=order,
@@ -1007,8 +1007,8 @@ def benchmark_derivative_timing_vs_order(
         orders,
         finite_times,
         "o-",
-        label="finite",
-        color=DEFAULT_COLORS["finite"],
+        label="forecasts",
+        color=DEFAULT_COLORS["forecasts"],
         lw=DEFAULT_LINEWIDTH,
         markersize=10,
     )
@@ -1194,9 +1194,9 @@ def plot_function_with_residuals(
 ):
     """Visualize a function and its tangent approximations with residual diagnostics.
 
-    This function plots the input function alongside its finite difference and adaptive
+    This function plots the input function alongside its forecasts difference and adaptive
     tangent approximations at a given point. It includes diagnostics such as residuals,
-    fractional residuals, and optionally the ratio of fractional residuals (adaptive / finite),
+    fractional residuals, and optionally the ratio of fractional residuals (adaptive / forecasts),
     helping to assess the accuracy and behavior of each method.
 
     Args:
@@ -1219,10 +1219,10 @@ def plot_function_with_residuals(
 
     Notes:
     ------
-    - Uses `DerivativeKit` to estimate derivatives via both adaptive fitting and finite differences.
+    - Uses `DerivativeKit` to estimate derivatives via both adaptive fitting and forecasts differences.
     - Residuals are defined as: f(x) − T(x), where T(x) is the tangent.
     - Fractional residuals are normalized by the function value.
-    - The ratio panel shows (adaptive / finite) − 1 to highlight relative performance.
+    - The ratio panel shows (adaptive / forecasts) − 1 to highlight relative performance.
     """
     x0 = central_value
     x = np.linspace(x0 - dx, x0 + dx, 400)
@@ -1285,8 +1285,8 @@ def plot_function_with_residuals(
         tangent_finite,
         ":",
         lw=lw,
-        label="finite tangent",
-        color=colors["finite"],
+        label="forecasts tangent",
+        color=colors["forecasts"],
     )
     ax1.set_ylabel("$f(x)$", fontsize=fs)
     ax1.set_title(title, fontsize=fs)
@@ -1295,14 +1295,14 @@ def plot_function_with_residuals(
     # 2. Residuals
     ax2.axhline(0, ls="--", color=colors["central"], lw=lw)
     ax2.plot(x, resid_adapt, label="adaptive", color=colors["adaptive"], lw=lw)
-    ax2.plot(x, resid_finite, label="finite", color=colors["finite"], lw=lw, ls=":")
+    ax2.plot(x, resid_finite, label="forecasts", color=colors["forecasts"], lw=lw, ls=":")
     ax2.set_ylabel(r"$f(x) - T(x)$", fontsize=fs)
     ax2.legend(fontsize=fs - 2)
 
     # 3. Fractional residuals
     ax3.axhline(0, ls="--", color=colors["central"], lw=lw)
     ax3.plot(x, frac_adapt, label="adaptive", color=colors["adaptive"], lw=lw)
-    ax3.plot(x, frac_finite, label="finite", color=colors["finite"], lw=lw, ls=":")
+    ax3.plot(x, frac_finite, label="forecasts", color=colors["forecasts"], lw=lw, ls=":")
     ax3.set_ylabel(r"$\frac{f(x) - T(x)}{f(x)}$", fontsize=fs)
     if not show_ratio_panel:
         ax3.set_xlabel("evaluation point $x$", fontsize=fs)
@@ -1311,7 +1311,7 @@ def plot_function_with_residuals(
     # 4. Ratio panel
     if show_ratio_panel:
         ax4.axhline(0, ls="--", color=colors["central"], lw=lw)
-        ax4.plot(x, ratio - 1, color="lightgray", lw=lw, label=r"adaptive / finite")
+        ax4.plot(x, ratio - 1, color="lightgray", lw=lw, label=r"adaptive / forecasts")
         ax4.set_ylabel(r"frac. ratio", fontsize=fs)
         ax4.set_xlabel("evaluation point $x$", fontsize=fs)
         ax4.legend(fontsize=fs - 2)
