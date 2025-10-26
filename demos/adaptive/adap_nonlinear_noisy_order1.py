@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import numpy as np
 import matplotlib.pyplot as plt
-from pathlib import Path
 
 from derivkit.derivative_kit import DerivativeKit
 
 # style & utils (no DEFAULT_* imports needed)
 from common.style import apply_plot_style, DEFAULT_COLORS
 from common.formatters import format_value_with_uncertainty
-from common.utils import add_gaussian_noise, random_generator, resolve_outdir, save_fig
+from common.noise import add_gaussian_noise, random_generator
+from common.file import resolve_outdir, save_fig
 
 blue = DEFAULT_COLORS["blue"]
 red  = DEFAULT_COLORS["red"]

@@ -8,12 +8,14 @@ __all__ = [
     "DEFAULT_COLORS",
     "DEFAULT_FONTSIZE",
     "DEFAULT_LINEWIDTH",
-    "DEFAULT_MARKERSIZE"
+    "DEFAULT_MARKERSIZE",
+    "DEFAULT_MARKEREDGEWIDTH",
 ]
 
 DEFAULT_LINEWIDTH = 1.5
 DEFAULT_FONTSIZE = 15
 DEFAULT_MARKERSIZE = 10
+DEFAULT_MARKEREDGEWIDTH = DEFAULT_LINEWIDTH
 DEFAULT_COLORS = {
     "blue": "#3b9ab2",
     "yellow": "#e1af00",
@@ -27,11 +29,13 @@ def _rgba(hex_color: str, alpha: float) -> tuple:
 def apply_plot_style(*, base: str | None = None,
                      linewidth: float | None = None,
                      fontsize: int | None = None,
-                     markersize: int | None = None):
+                     markersize: int | None = None,
+                     markeredgewidth: float | None = None):
     base = base or DEFAULT_COLORS["blue"]
     linewidth  = linewidth  if linewidth  is not None else DEFAULT_LINEWIDTH
     fontsize   = fontsize   if fontsize   is not None else DEFAULT_FONTSIZE
     markersize = markersize if markersize is not None else DEFAULT_MARKERSIZE
+    markeredgewidth = markeredgewidth if markeredgewidth is not None else DEFAULT_MARKEREDGEWIDTH
 
     blue_strong = _rgba(base, 1.00)  # lines, labels, ticks, edges
     blue_medium = _rgba(base, 0.85)  # axes spine, legend edge
@@ -64,12 +68,13 @@ def apply_plot_style(*, base: str | None = None,
             "lines.linewidth": linewidth,
             "lines.markersize": markersize,
             "lines.marker": "none",
-            "lines.markeredgewidth": 0.8,
+            "lines.markeredgewidth": markeredgewidth,
+            "patch.linewidth": markeredgewidth,  # legend box / rectangles
+            "axes.linewidth": markeredgewidth,  # axes spines (add this line)
 
             # (optional) scatter defaults to match lines
             "scatter.marker": "o",
             "scatter.edgecolors": "face",
-            "patch.linewidth": 0.8,
 
             # ---- monochrome color mapping ----
             "text.color": blue_strong,
@@ -94,7 +99,7 @@ def apply_plot_style(*, base: str | None = None,
             "grid.color": blue_soft,
             "grid.alpha": 1.0,
             "grid.linestyle": ":",
-            "grid.linewidth": 0.9,
+            "grid.linewidth": 0.9 * markeredgewidth, # optional consistency
 
             # ---- legend ----
             "legend.edgecolor": blue_medium,

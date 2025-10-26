@@ -162,7 +162,7 @@ def main():
             Line2D([0],[0], color=red, lw=DEFAULT_LINEWIDTH, ls='-',  label="Exact"),
             Line2D([0],[0], color=blue, lw=DEFAULT_LINEWIDTH, ls='-.', label="Doublet DALI"),
             Line2D([0],[0], color=yellow, lw=DEFAULT_LINEWIDTH, ls='-', label="Fisher"),
-            Line2D([0],[0], color=red, lw=0, marker='x', ms=10, label="Fiducial"),
+            Line2D([0],[0], color=red, marker='x', s=100, label="Fiducial"),
         ]
     else:
         handles = [
