@@ -1,7 +1,11 @@
+"""Common file and path utilities."""
+
 from __future__ import annotations
+
 from pathlib import Path
 from typing import Mapping, Optional
 import re
+
 import matplotlib.figure as mpl_figure
 
 __all__ = [
