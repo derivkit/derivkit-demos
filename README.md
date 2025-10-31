@@ -1,4 +1,4 @@
-# DerivKit Demos
+
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-red.png" width="70" alt="DerivKit red"/>
@@ -22,6 +22,9 @@
 
 
 ---
+
+# DerivKit Demos
+
 
 
 **Runnable demo collection** for the [DerivKit](https://github.com/derivkit/derivkit) ecosystem.  
