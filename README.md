@@ -45,8 +45,7 @@ derivkit-demos/
 │  ├─ 04-calculus-kit-advanced.py
 │  ├─ 05-forecast-kit-fisher.py
 │  ├─ 06-forecast-kit-fisher-bias.py
-│  ├─ 07-forecast-kit-dali.py
-│  └─ __init__.py                # not needed; safe to remove
+│  └─ 07-forecast-kit-dali.py
 │
 ├─ demo-notebooks/               # Optional notebooks (not required for running)
 ├─ utils/
