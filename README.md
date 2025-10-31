@@ -1,7 +1,7 @@
 # DerivKit Demos
 
 <p align="center">
-  <img src="utils/dk_logo.jpeg" alt="DerivKit Logo" width="280"/>
+  <img src="https://github.com/derivkit/derivkit-logo/blob/main/png/logo-blue.png" alt="DerivKit Logo" width="280"/>
 </p>
 
 ---
