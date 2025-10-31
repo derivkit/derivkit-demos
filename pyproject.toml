@@ -1,0 +1,14 @@
+# No [build-system], no [project] => not installable.
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "Q", "I", "D", "PLC0415"]
+ignore = ["E203", "E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["derivkit"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
