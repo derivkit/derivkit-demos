@@ -23,4 +23,4 @@ notebooks/.ipynb_checkpoints/
 data/raw/
 data/interim/
 data/processed/
-/demos/plots/
+/demo-scripts/plots/

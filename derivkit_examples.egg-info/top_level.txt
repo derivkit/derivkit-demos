@@ -1,6 +1,0 @@
-common
-demos
-notebooks
-plots
-scripts
-utils
