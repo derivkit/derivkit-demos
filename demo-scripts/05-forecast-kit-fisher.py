@@ -1,4 +1,4 @@
-"""DerivKit — Fisher Information Demo.
+"""DerivKit — ForecastKit Fisher Information Demo.
 
 This demo shows how to use :class:`ForecastKit` to compute the Fisher
 information matrix for a simple 2-parameter model (x and y) with 2 observables
@@ -26,8 +26,8 @@ What it does
 
 Usage
 -----
-    $ python demo-scripts/05-forecasting-kit-fisher.py --method adaptive
-    $ python demo-scripts/05-forecasting-kit-fisher.py --method adaptive --plot
+    $ python demo-scripts/05-forecast-kit-fisher.py --method adaptive
+    $ python demo-scripts/05-forecast-kit-fisher.py --method adaptive --plot
 
 Notes:
 -----
@@ -59,6 +59,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from derivkit import ForecastKit
+from utils.style import apply_plot_style, DEFAULT_COLORS
+
 
 # --- constants for pretty printing/labels ---
 # 1D confidence levels for marginal errors
@@ -66,8 +68,8 @@ PCT_1D_1SIG = 0.682689492  # 68.27%
 PCT_1D_2SIG = 0.954499736  # 95.45%
 
 # 2D confidence levels used for Fisher ellipses
-PCT_2D_1SIG = 0.683        # 68.3%
-PCT_2D_2SIG = 0.955        # 95.5%
+PCT_2D_1SIG = 0.683  # 68.3%
+PCT_2D_2SIG = 0.955  # 95.5%
 
 
 def plot_fisher_ellipse(theta0: np.ndarray,
@@ -77,7 +79,8 @@ def plot_fisher_ellipse(theta0: np.ndarray,
                         ax=None,
                         label: str | None = None,
                         lw: float = 2.0,
-                        ls: str = "-"):
+                        ls: str = "-",
+                        color: str | None = None) -> plt.Axes:
     """Plots the Fisher ellipse for a 2×2 Fisher matrix `F2` at parameter point `theta0`.
 
     Args:
@@ -88,6 +91,7 @@ def plot_fisher_ellipse(theta0: np.ndarray,
         label: Label for the ellipse (for legend).
         lw: Line width for the ellipse.
         ls: Line style for the ellipse.
+        color: Line color for the ellipse (default uses style blue).
 
     Returns:
         Matplotlib Axes with the ellipse plotted.
@@ -107,13 +111,15 @@ def plot_fisher_ellipse(theta0: np.ndarray,
     t = np.linspace(0, 2*np.pi, 400)
     circle = np.vstack([np.cos(t), np.sin(t)])
     ellipse = vecs @ np.diag(np.sqrt(vals * k2)) @ circle
-    blue_color = "#3b9ab2"
+
+    if not color:
+        color = DEFAULT_COLORS["blue"]
 
     if ax is None:
         _, ax = plt.subplots()
     ax.plot(theta0[0] + ellipse[0], theta0[1] + ellipse[1],
-            label=label, linewidth=lw, linestyle=ls, color=blue_color)
-    ax.scatter([theta0[0]], [theta0[1]], s=25, color=blue_color)
+            label=label, linewidth=lw, linestyle=ls, color=color)
+    ax.scatter([theta0[0]], [theta0[1]], s=25, color=color)
     ax.set_xlabel(r"parameter $\theta_1$", fontsize=13)
     ax.set_ylabel(r"parameter $\theta_2$", fontsize=13)
     ax.set_aspect("equal", adjustable="box")
@@ -225,6 +231,7 @@ def main() -> None:
     print(f"2σ ({PCT_1D_2SIG*100:.2f}%) errors on (x, y):", sigma_2)
 
     if args.plot:
+        apply_plot_style()
         fig, ax = plt.subplots()
         plot_fisher_ellipse(theta0, fish_num, level=PCT_2D_1SIG,
                             ax=ax, label="1σ (68.3%)", ls="--",  lw=2.0)
@@ -233,7 +240,18 @@ def main() -> None:
         title = "Fisher $1 \\sigma \\: (68.3\\%)$ and $2 \\sigma \\: (95.5\\%)$ contours"
         ax.set_title(title, fontsize=15)
         plt.tight_layout()
+
+        # --- save as PDF and PNG ---
+        from pathlib import Path
+        out = Path("plots/fisher_ellipses_2d.pdf")
+        out.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(out, dpi=300, bbox_inches="tight")
+        plt.savefig(out.with_suffix(".png"), dpi=300, bbox_inches="tight")
+        print(f"saved: {out} and {out.with_suffix('.png')}")
+
         plt.show()
+
+        print("Done. Another ellipse, another insight.")
 
 
 if __name__ == "__main__":

@@ -113,6 +113,7 @@ def main() -> None:
     print(f"  3   {t3:>12.6f}   {d3_ad:>12.6f}   {d3_fd:>12.6f}")
     print(thick)
 
+    print("Done. DerivKit — the joy of change, expressed precisely.")
 
 if __name__ == "__main__":
     main()

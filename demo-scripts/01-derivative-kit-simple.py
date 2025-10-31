@@ -69,6 +69,7 @@ def main() -> None:
     print(f"Adaptive   : {d1_ad:>12.6f}   {d2_ad:>12.6f}")
     print(f"Finite     : {d1_fd:>12.6f}   {d2_fd:>12.6f}")
 
+    print("Done. DerivKit — the joy of change, expressed precisely.")
 
 if __name__ == "__main__":
     main()

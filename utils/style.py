@@ -10,6 +10,9 @@ __all__ = [
     "DEFAULT_LINEWIDTH",
     "DEFAULT_MARKERSIZE",
     "DEFAULT_MARKEREDGEWIDTH",
+    "use_blue",
+    "use_yellow",
+    "use_red",
 ]
 
 DEFAULT_LINEWIDTH = 1.5
@@ -118,3 +121,8 @@ def apply_plot_style(*, base: str | None = None,
             "patch.facecolor": _rgba(base, 0.15),
         }
     )
+
+def use_blue(**kw): return apply_plot_style(base=DEFAULT_COLORS["blue"], **kw)
+def use_yellow(**kw): return apply_plot_style(base=DEFAULT_COLORS["yellow"], **kw)
+def use_red(**kw): return apply_plot_style(base=DEFAULT_COLORS["red"], **kw)
+

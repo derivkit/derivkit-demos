@@ -129,7 +129,7 @@ def main() -> None:
     pretty_print("J (analytic)", jac_ref)
     show_delta("J", jac_num, jac_ref)
 
-    print("Done.")
+    print("Done. ∇ guides, H bends, J translates.")
 
 if __name__ == "__main__":
     main()

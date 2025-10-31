@@ -1,14 +1,4 @@
+derivkit
 numpy
 scipy
 matplotlib
-jupyterlab
-ipykernel
-pytest
-pytest-nbmake
-ruff
-black
-nbstripout
-pre-commit
-papermill
-nbclient
-git+https://github.com/derivkit/derivkit@main
