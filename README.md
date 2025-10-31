@@ -25,8 +25,6 @@
 
 # DerivKit Demos
 
-
-
 **Runnable demo collection** for the [DerivKit](https://github.com/derivkit/derivkit) ecosystem.  
 This repository is **non-installable by design** — just clone, create an environment, and run.  
 It contains ready-to-execute Python scripts and optional Jupyter notebooks showcasing
@@ -62,6 +60,25 @@ derivkit-demos/
 ├─ LICENSE
 └─ README.md
 ```
+
+---
+
+
+##  Demos included
+
+**DerivativeKit / CalculusKit**
+- Adaptive vs. finite-difference backends with analytic comparisons.
+
+
+**DerivativeKit / CalculusKit**
+- Gradients, Hessians, and Jacobians with analytic comparisons.
+
+**ForecastKit**
+- **Fisher Information (2D)** — analytic vs. numerical ellipses.
+- **Fisher Bias** — systematic offset → parameter shift (Δθ).
+- **DALI (1D)** — Fisher vs. Doublet-DALI vs. exact log-likelihood.
+
+Figures are automatically saved to `plots/` as both `.pdf` and `.png` unless `--plot` is used to display them interactively.
 
 ---
 
@@ -113,24 +130,6 @@ python demo-scripts/05-forecast-kit-fisher.py --plot
 
 ---
 
-##  Demos included
-
-**DerivativeKit / CalculusKit**
-- Adaptive vs. finite-difference backends with analytic comparisons.
-
-
-**DerivativeKit / CalculusKit**
-- Gradients, Hessians, and Jacobians with analytic comparisons.
-
-**ForecastKit**
-- **Fisher Information (2D)** — analytic vs. numerical ellipses.
-- **Fisher Bias** — systematic offset → parameter shift (Δθ).
-- **DALI (1D)** — Fisher vs. Doublet-DALI vs. exact log-likelihood.
-
-Figures are automatically saved to `plots/` as both `.pdf` and `.png` unless `--plot` is used to display them interactively.
-
----
-
 ##  Styling
 
 All demos use a shared visual style from:
@@ -178,3 +177,9 @@ MIT — see [LICENSE](LICENSE).
 
 Developed as part of the **DerivKit ecosystem** (CalculusKit, ForecastKit, and friends).  
 Thanks to all contributors and collaborators supporting derivative-based cosmological inference tools.
+
+## Useful links
+- [DerivKit documentation](https://docs.derivkit.org)
+- [DerivKit website](https://derivkit.org)
+- [DerivKit GitHub repository](https://github.com/derivkit/derivkit)
+- [DerivKit organization](https://github.com/derivkit)
