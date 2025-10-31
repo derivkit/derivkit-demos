@@ -19,7 +19,7 @@ What it does
   • explicit **finite** differences (baseline).
 - Prints numerical and analytic values side by side.
 
-Notes
+Notes:
 -----
 - If ``method`` is omitted, the **adaptive** backend is used.
 - You can force a backend via ``method="finite"`` (or another registered one).

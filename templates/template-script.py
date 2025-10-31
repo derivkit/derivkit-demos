@@ -12,7 +12,7 @@ What it does
 ------------
 Here list the main steps the script performs.
 
-Notes
+Notes:
 -----
 Here list any important notes about the demo.
 

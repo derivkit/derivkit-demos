@@ -40,7 +40,7 @@ Usage
   $ python demo-scripts/07-forecast-kit-dali.py --method adaptive
   $ python demo-scripts/07-forecast-kit-dali.py --method adaptive --plot
 
-Notes
+Notes:
 -----
 - If ``method`` is omitted, the **adaptive** backend is used; you can pass
   ``--method finite`` (or any registered backend).
@@ -57,11 +57,11 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from derivkit.forecast_kit import ForecastKit
-from utils.style import apply_plot_style, DEFAULT_COLORS
+from utils.style import DEFAULT_COLORS, apply_plot_style
 
 
 def test_model_1d(param_list) -> np.ndarray:

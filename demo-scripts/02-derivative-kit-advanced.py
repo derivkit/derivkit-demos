@@ -18,7 +18,7 @@ What it does
 - Also computes a **5-point central** finite-difference baseline for d¹–d³.
 - Prints numerical results alongside the analytic derivatives for immediate comparison.
 
-Notes
+Notes:
 -----
 - When you pass `grid=("offsets", ...)`, `n_points` and `spacing` are ignored for that call.
 - `spacing` denotes the **half-width** of the symmetric sampling window around `x0`

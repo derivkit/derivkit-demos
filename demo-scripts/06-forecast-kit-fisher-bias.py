@@ -50,7 +50,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from derivkit import ForecastKit
-from utils.style import apply_plot_style, DEFAULT_COLORS
+from utils.style import DEFAULT_COLORS, apply_plot_style
 
 # --- constants for pretty printing/labels ---
 # 1D confidence levels for marginal errors

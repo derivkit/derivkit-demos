@@ -1,8 +1,12 @@
 """Utility to run demo scripts with proper module paths."""
 
 from __future__ import annotations
+
+import argparse
+import re
+import runpy
+import sys
 from pathlib import Path
-import argparse, runpy, sys, re
 
 ROOT  = Path(__file__).resolve().parent
 DEMOS = ROOT / "demo-scripts"
@@ -43,7 +47,7 @@ def list_demos():
         print(f"  {tag:>5}  {e['name']:<{width}}   ({e['path'].relative_to(ROOT)})")
 
 def resolve_demo(query: str):
-    """Resolves a demo script from a query string. """
+    """Resolves a demo script from a query string."""
     entries = _catalog()
     if not entries:
         raise SystemExit("No demos found under demo-scripts/")

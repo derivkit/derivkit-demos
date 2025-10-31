@@ -34,6 +34,7 @@ def apply_plot_style(*, base: str | None = None,
                      fontsize: int | None = None,
                      markersize: int | None = None,
                      markeredgewidth: float | None = None):
+    """Apply a general plot style to matplotlib."""
     base = base or DEFAULT_COLORS["blue"]
     linewidth  = linewidth  if linewidth  is not None else DEFAULT_LINEWIDTH
     fontsize   = fontsize   if fontsize   is not None else DEFAULT_FONTSIZE
@@ -122,7 +123,16 @@ def apply_plot_style(*, base: str | None = None,
         }
     )
 
-def use_blue(**kw): return apply_plot_style(base=DEFAULT_COLORS["blue"], **kw)
-def use_yellow(**kw): return apply_plot_style(base=DEFAULT_COLORS["yellow"], **kw)
-def use_red(**kw): return apply_plot_style(base=DEFAULT_COLORS["red"], **kw)
+def use_blue(**kw):
+    """Apply the plot style with blue as the base color."""
+    return apply_plot_style(base=DEFAULT_COLORS["blue"], **kw)
 
+
+def use_yellow(**kw):
+    """Apply the plot style with yellow as the base color."""
+    return apply_plot_style(base=DEFAULT_COLORS["yellow"], **kw)
+
+
+def use_red(**kw):
+    """Apply the plot style with red as the base color."""
+    return apply_plot_style(base=DEFAULT_COLORS["red"], **kw)

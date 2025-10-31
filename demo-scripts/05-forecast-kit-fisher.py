@@ -54,13 +54,13 @@ Requirements
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from derivkit import ForecastKit
-from utils.style import apply_plot_style, DEFAULT_COLORS
-
+from utils.style import DEFAULT_COLORS, apply_plot_style
 
 # --- constants for pretty printing/labels ---
 # 1D confidence levels for marginal errors
@@ -242,7 +242,6 @@ def main() -> None:
         plt.tight_layout()
 
         # --- save as PDF and PNG ---
-        from pathlib import Path
         out = Path("plots/fisher_ellipses_2d.pdf")
         out.parent.mkdir(parents=True, exist_ok=True)
         plt.savefig(out, dpi=300, bbox_inches="tight")
