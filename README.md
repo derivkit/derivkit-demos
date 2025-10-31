@@ -1,8 +1,27 @@
 # DerivKit Demos
 
 <p align="center">
-  <img src="https://github.com/derivkit/derivkit-logo/blob/main/png/logo-blue.png" alt="DerivKit Logo" width="280"/>
+  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-red.png" width="70" alt="DerivKit red"/>
+  &nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-blue.png" width="70" alt="DerivKit blue"/>
+  &nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-yellow.png" width="70" alt="DerivKit yellow"/>
+<img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-red.png" width="70" alt="DerivKit red"/>
+  &nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-blue.png" width="70" alt="DerivKit blue"/>
+  &nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-yellow.png" width="70" alt="DerivKit yellow"/>
+<img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-red.png" width="70" alt="DerivKit red"/>
+  &nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-blue.png" width="70" alt="DerivKit blue"/>
+  &nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-yellow.png" width="70" alt="DerivKit yellow"/>
+<img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-red.png" width="70" alt="DerivKit red"/>
+  &nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-blue.png" width="70" alt="DerivKit blue"/>
+  &nbsp;&nbsp;
 </p>
+
 
 ---
 
