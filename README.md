@@ -98,7 +98,8 @@ python demo-scripts/05-forecast-kit-fisher.py --plot
 
 **DerivativeKit / CalculusKit**
 - Adaptive vs. finite-difference backends with analytic comparisons.
-- 
+
+
 **DerivativeKit / CalculusKit**
 - Gradients, Hessians, and Jacobians with analytic comparisons.
 
