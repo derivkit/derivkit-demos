@@ -66,11 +66,11 @@ derivkit-demos/
 
 ##  Demos included
 
-**DerivativeKit / CalculusKit**
-- Adaptive vs. finite-difference backends with analytic comparisons.
+**DerivativeKit**
+- Derivative methods backends with analytic comparisons (finite, poly, adaptive).
 
 
-**DerivativeKit / CalculusKit**
+**CalculusKit**
 - Gradients, Hessians, and Jacobians with analytic comparisons.
 
 **ForecastKit**
