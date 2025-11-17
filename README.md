@@ -173,6 +173,24 @@ MIT — see [LICENSE](LICENSE).
 
 ---
 
+## Citation
+
+If you use **derivkit** in your research, please cite:
+
+```bibtex
+@software{sarcevic2025derivkit,
+  author       = {Nikolina Šarčević and Matthijs van der Wild and Cynthia Trendafilova and Bastien Carreres},
+  title        = {derivkit: A Python Toolkit for Numerical Derivatives},
+  year         = {2025},
+  publisher    = {GitHub},
+  journal      = {GitHub Repository},
+  howpublished = {\url{https://github.com/derivkit/derivkit}},
+}
+
+```
+
+---
+
 ##  Acknowledgements
 
 Developed as part of the **DerivKit ecosystem** (CalculusKit, ForecastKit, and friends).  
