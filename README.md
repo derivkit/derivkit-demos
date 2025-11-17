@@ -74,9 +74,9 @@ derivkit-demos/
 - Gradients, Hessians, and Jacobians with analytic comparisons.
 
 **ForecastKit**
-- **Fisher Information (2D)** — analytic vs. numerical ellipses.
+- **Fisher Information** — analytic vs. numerical ellipses.
 - **Fisher Bias** — systematic offset → parameter shift (Δθ).
-- **DALI (1D)** — Fisher vs. Doublet-DALI vs. exact log-likelihood.
+- **DALI** — Fisher vs. Doublet-DALI vs. exact log-likelihood.
 
 Figures are automatically saved to `plots/` as both `.pdf` and `.png` unless `--plot` is used to display them interactively.
 
