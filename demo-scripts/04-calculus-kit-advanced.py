@@ -161,6 +161,10 @@ def main() -> None:
     pretty_print("J (analytic)", jac_ref)
     show_delta("J", jac_num, jac_ref)
 
+    print("grad shape:", grad_num.shape)
+    print("hess shape:", hess_num.shape)
+    print("jac shape:", jac_num.shape)
+
     print("Done. ∇ guides, H bends, J translates.")
 
 if __name__ == "__main__":
