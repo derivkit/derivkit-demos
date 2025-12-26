@@ -1,4 +1,4 @@
-"""DerivKit — Tabulated Derivatives Demo.
+"""DerivKit — Tabulated Derivatives Demo (advanced).
 
 Short summary:
     Differentiates a known function using DerivativeKit in *tabulated mode*
@@ -27,7 +27,7 @@ What it does
 
 Usage
 -----
-    $ python demo-scripts/08-derivative-kit-tabulated.py
+    $ python demo-scripts/09-derivative-kit-tabulated_advanced.py
 """
 
 from __future__ import annotations
