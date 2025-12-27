@@ -43,7 +43,10 @@ derivkit-demos/
 │  ├─ 04-calculus-kit-advanced.py
 │  ├─ 05-forecast-kit-fisher.py
 │  ├─ 06-forecast-kit-fisher-bias.py
-│  └─ 07-forecast-kit-dali.py
+│  ├─ 07-forecast-kit-dali.py
+│  ├─ 08-derivative-kit-tabulated-simple.py
+│  └─ 09-derivative-kit-tabulated-advanced.py
+
 │
 ├─ demo-notebooks/               # Optional notebooks (not required for running)
 ├─ utils/
@@ -68,6 +71,7 @@ derivkit-demos/
 
 **DerivativeKit**
 - Derivative methods backends with analytic comparisons (finite, poly, adaptive).
+- Derivatives of tabulated functions with interpolation schemes.
 
 
 **CalculusKit**
