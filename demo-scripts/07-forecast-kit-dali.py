@@ -151,8 +151,8 @@ def main() -> None:
     fk = ForecastKit(function=observables, theta0=np.array(fiducial_values, dtype=float), cov=covmat)
     fisher_matrix = fk.fisher(method=args.method)  # (1, 1)
     dali_dict = fk.dali(method=method)  
-    g = dali_dict[2][0]  # shape (1,1,1)
-    h = dali_dict[2][1]  # shape (1,1,1,1)
+    dali_g = dali_dict[2][0]  # shape (1,1,1)
+    dali_h = dali_dict[2][1]  # shape (1,1,1,1)
     tensors = [fisher_matrix, dali_g, dali_h]
 
     # likelihoods
