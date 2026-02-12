@@ -1,4 +1,4 @@
-name: derivkit-examples
+name: derivkit-demos
 channels: [conda-forge]
 dependencies:
   - python=3.11
