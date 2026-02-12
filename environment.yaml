@@ -5,16 +5,9 @@ dependencies:
   - numpy
   - scipy
   - matplotlib
+  - cmasher
   - jupyterlab
   - ipykernel
   - pip
   - pip:
       - derivkit @ git+https://github.com/derivkit/derivkit@main
-      - pytest
-      - pytest-nbmake
-      - ruff
-      - black
-      - nbstripout
-      - pre-commit
-      - papermill
-      - nbclient

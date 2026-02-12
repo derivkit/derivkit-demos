@@ -25,6 +25,10 @@
 
 # DerivKit Demos
 
+[![Binder: open CCL demo notebook](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/derivkit/derivkit-demos/main?labpath=demo-notebooks/10-derivkit-ccl-demo.ipynb)
+[![Binder: JupyterLab](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/derivkit/derivkit-demos/main)
+
+
 **Runnable demo collection** for the [DerivKit](https://github.com/derivkit/derivkit) ecosystem.  
 This repository is **non-installable by design** — just clone, create an environment, and run.  
 It contains ready-to-execute Python scripts and optional Jupyter notebooks showcasing
