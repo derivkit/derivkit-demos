@@ -6,6 +6,7 @@ dependencies:
   - scipy
   - matplotlib
   - cmasher
+  - pyccl
   - jupyterlab
   - ipykernel
   - pip
