@@ -11,41 +11,41 @@ working example rather than a fully realistic cluster analysis.
 
 Basic usage (from the project root):
     python demo-scripts/10_cluster_counts.py
-    python demo-scripts/10_cluster_counts.py --mode fisher
-    python demo-scripts/10_cluster_counts.py --mode dali
-    python demo-scripts/10_cluster_counts.py --mode both
+    python demo-scripts/10_cluster_counts.py --forecast_mode fisher
+    python demo-scripts/10_cluster_counts.py --forecast_mode dali
+    python demo-scripts/10_cluster_counts.py --forecast_mode both
 
 Alternatively, from inside demo-scripts:
-    python 10_cluster_counts.py --mode both
+    python 10_cluster_counts.py --forecast_mode both
 
 Choose which parameters to vary:
     python demo-scripts/10_cluster_counts.py --params Omega_m sigma8
-    python demo-scripts/10_cluster_counts.py --params Omega_m sigma8 pivot_mass pivot_redshift
+    python demo-scripts/10_cluster_counts.py --params Omega_m sigma8 mu0 mu1 mu2 sigma0 sigma1 sigma2
 
 Override fiducial parameter values:
     python demo-scripts/10_cluster_counts.py --Omega_m 0.31 --sigma8 0.83
-    python demo-scripts/10_cluster_counts.py --pivot_mass 14.7 --pivot_redshift 0.55
+    python demo-scripts/10_cluster_counts.py --mu0 14.6 --mu1 0.0 --mu2 0.0 --P0 0.25 --p1 0.0 --p2 0.0
 
 Change binning:
     python demo-scripts/10_cluster_counts.py --n-z-bins 3 --n-proxy-bins 3
     python demo-scripts/10_cluster_counts.py --n-z-bins 4 --n-proxy-bins 4
 
 Run Fisher only without plotting:
-    python demo-scripts/10_cluster_counts.py --mode fisher --no-plot
+    python demo-scripts/10_cluster_counts.py --forecast_mode fisher --no-plot
 
 Run DALI with a different stepsize:
-    python demo-scripts/10_cluster_counts.py --mode dali --stepsize 1e-2
+    python demo-scripts/10_cluster_counts.py --forecast_mode dali --stepsize 1e-2
 
 Use 10 percent Gaussian priors on all active parameters (default is 2%):
-    python demo-scripts/10_cluster_counts.py --mode both --prior-frac 0.1
+    python demo-scripts/10_cluster_counts.py --forecast_mode both --prior-frac 0.1
 
-Use custom Gauissan priors on selected parameters:
-    python demo-scripts/10_cluster_counts.py --mode both \\
-        --prior-params Omega_m sigma8 pivot_mass \\
-        --prior-sigmas 0.03 0.05 0.2
+Use custom Gaussian priors on selected parameters:
+    python demo-scripts/10_cluster_counts.py --forecast_mode both \\
+       --prior-params Omega_m sigma8 mu0 sigma0 \\
+       --prior-sigmas 0.03 0.05 0.2 0.05
 
 Add finite DALI prior bounds at +/- 5 sigma around the fiducial:
-    python demo-scripts/10_cluster_counts.py --mode dali --prior-frac 0.1 --prior-nsigma-bounds 5
+    python demo-scripts/10_cluster_counts.py --forecast_mode dali --prior-frac 0.1 --prior-nsigma-bounds 5
 
 Output plot:
     Saved as toy_crow_counts_triangle.pdf (or use --output to change name)
@@ -90,16 +90,24 @@ DEFAULT_PARAMS = OrderedDict(
     [
         ("Omega_m", 0.31),
         ("sigma8", 0.8102),
-        ("pivot_mass", 14.625862906),
-        ("pivot_redshift", 0.6),
+        ("mu0", 3.0),
+        ("mu1", 0.8),
+        ("mu2", -0.3),
+        ("sigma0", 0.3),
+        ("sigma1", 0.0),
+        ("sigma2", 0.0),
     ]
 )
 
 PARAM_LABELS = {
     "Omega_m": r"\Omega_m",
     "sigma8": r"\sigma_8",
-    "pivot_mass": r"M_{\rm piv}",
-    "pivot_redshift": r"z_{\rm piv}",
+    "mu0": r"\mu_0",
+    "mu1": r"\mu_1",
+    "mu2": r"\mu_2",
+    "sigma0": r"\sigma_0",
+    "sigma1": r"\sigma_1",
+    "sigma2": r"\sigma_2",
 }
 
 
@@ -109,7 +117,7 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--mode",
+        "--forecast_mode",
         choices=["fisher", "dali", "both"],
         default="both",
         help="Which forecast to run.",
@@ -123,15 +131,20 @@ def parse_args():
         help="Active parameter subset, in order.",
     )
 
-    parser.add_argument("--Omega_m", type=float, default=DEFAULT_PARAMS[
-        "Omega_m"])
-    parser.add_argument("--sigma8", type=float, default=DEFAULT_PARAMS["sigma8"])
-    parser.add_argument("--pivot_mass", type=float, default=DEFAULT_PARAMS["pivot_mass"])
-    parser.add_argument(
-        "--pivot_redshift",
-        type=float,
-        default=DEFAULT_PARAMS["pivot_redshift"],
-    )
+    parser.add_argument("--Omega_m", type=float,
+                        default=DEFAULT_PARAMS["Omega_m"])
+    parser.add_argument("--sigma8", type=float,
+                        default=DEFAULT_PARAMS["sigma8"])
+
+    parser.add_argument("--mu0", type=float, default=DEFAULT_PARAMS["mu0"])
+    parser.add_argument("--mu1", type=float, default=DEFAULT_PARAMS["mu1"])
+    parser.add_argument("--mu2", type=float, default=DEFAULT_PARAMS["mu2"])
+    parser.add_argument("--sigma0", type=float,
+                        default=DEFAULT_PARAMS["sigma0"])
+    parser.add_argument("--sigma1", type=float,
+                        default=DEFAULT_PARAMS["sigma1"])
+    parser.add_argument("--sigma2", type=float,
+                        default=DEFAULT_PARAMS["sigma2"])
 
     parser.add_argument("--Omega_b", type=float, default=0.04897)
     parser.add_argument("--h", type=float, default=0.6766)
@@ -183,7 +196,7 @@ def parse_args():
     parser.add_argument(
         "--prior-frac",
         type=float,
-        default=0.02,
+        default=None,
         help=(
             "Relative 1-sigma Gaussian prior width for active parameters. "
             "Example: --prior-frac 0.1 means sigma_prior = 0.1 * abs(theta0)."
@@ -233,8 +246,12 @@ def make_theta0(args, active_params):
     values = {
         "Omega_m": args.Omega_m,
         "sigma8": args.sigma8,
-        "pivot_mass": args.pivot_mass,
-        "pivot_redshift": args.pivot_redshift,
+        "mu0": args.mu0,
+        "mu1": args.mu1,
+        "mu2": args.mu2,
+        "sigma0": args.sigma0,
+        "sigma1": args.sigma1,
+        "sigma2": args.sigma2,
     }
     return np.array([values[p] for p in active_params], dtype=float)
 
@@ -243,12 +260,35 @@ def make_full_param_dict(theta, active_params, args):
     params = {
         "Omega_m": args.Omega_m,
         "sigma8": args.sigma8,
-        "pivot_mass": args.pivot_mass,
-        "pivot_redshift": args.pivot_redshift,
+        "mu0": args.mu0,
+        "mu1": args.mu1,
+        "mu2": args.mu2,
+        "sigma0": args.sigma0,
+        "sigma1": args.sigma1,
+        "sigma2": args.sigma2,
     }
     for name, value in zip(active_params, theta):
         params[name] = float(value)
     return params
+
+
+def build_murata_mass_distribution(p):
+    """
+    Build MurataUnbinned from the mass-richness parameters.
+    """
+    mass_distribution = MurataUnbinned(
+        pivot_log_mass=14.625862906,
+        pivot_redshift=0.6,
+    )
+
+    mass_distribution.parameters["mu0"] = float(p["mu0"])
+    mass_distribution.parameters["mu1"] = float(p["mu1"])
+    mass_distribution.parameters["mu2"] = float(p["mu2"])
+    mass_distribution.parameters["sigma0"] = float(p["sigma0"])
+    mass_distribution.parameters["sigma1"] = float(p["sigma1"])
+    mass_distribution.parameters["sigma2"] = float(p["sigma2"])
+
+    return mass_distribution
 
 
 def make_counts_model(args, active_params):
@@ -276,7 +316,8 @@ def make_counts_model(args, active_params):
 
         if Omega_c <= 0:
             raise ValueError(
-                "Need Omega_m > Omega_b so that Omega_c stays positive.")
+                "Need Omega_m > Omega_b so that Omega_c stays positive."
+            )
 
         cosmo = ccl.Cosmology(
             Omega_c=Omega_c,
@@ -286,10 +327,7 @@ def make_counts_model(args, active_params):
             n_s=args.n_s,
         )
 
-        mass_distribution = MurataUnbinned(
-            p["pivot_mass"],
-            p["pivot_redshift"],
-        )
+        mass_distribution = build_murata_mass_distribution(p)
 
         hmf = ccl.halos.MassFuncTinker08(mass_def="200c")
         cluster_theory = ClusterShearProfile(cosmo, hmf, 4.0, True)
@@ -333,8 +371,12 @@ def get_fiducial_param_dict(args):
     return {
         "Omega_m": args.Omega_m,
         "sigma8": args.sigma8,
-        "pivot_mass": args.pivot_mass,
-        "pivot_redshift": args.pivot_redshift,
+        "mu0": args.mu0,
+        "mu1": args.mu1,
+        "mu2": args.mu2,
+        "sigma0": args.sigma0,
+        "sigma1": args.sigma1,
+        "sigma2": args.sigma2,
     }
 
 
@@ -506,7 +548,7 @@ def main():
     names = active_params
     labels = [PARAM_LABELS[p] for p in active_params]
 
-    if args.mode in ["fisher", "both"]:
+    if args.forecast_mode in ["fisher", "both"]:
         print("I am now calculating fisher")
         fisher = fk.fisher(
             method=args.deriv_method,
@@ -554,7 +596,7 @@ def main():
         contour_ls.append("-")
         legend_labels.append("Fisher" if not sigma_map else "Fisher + prior")
 
-    if args.mode in ["dali", "both"]:
+    if args.forecast_mode in ["dali", "both"]:
         print("I am now calculating DALI")
         dali = fk.dali(
             forecast_order=args.forecast_order,
