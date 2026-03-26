@@ -1,5 +1,8 @@
 """Toy cluster-count forecast using CROW and DerivKit.
 
+crow: https://github.com/LSSTDESC/crow/tree/main
+derivkit: https://docs.derivkit.org/main/
+
 This script builds a simple cluster number-count model and computes parameter
 constraints using either Fisher, DALI, or both. The observable is a vector of
 cluster counts in redshift–proxy bins, and the covariance is taken to be
