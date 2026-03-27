@@ -2,26 +2,39 @@
 This script builds a simple cluster-count model and computes parameter
 constraints using either Fisher, DALI, or both.
 
-This script calls script 10_cluser_counts.py and calculates posterior
-contours for a user-specified sweep of parameters. The resulting contours
-are overlaid in a single plot to illustrate how the constraints change as
+This script calls 10_cluster_counts.py and computes posterior contours
+for a user-specified sweep of parameters. The resulting contours are
+overlaid in a single plot to illustrate how the constraints change as
 the parameters are varied.
+
+You can run a sweep over ANY parameter or combination of parameters
+that are cirrently accessible via command-line arguments.
 
 Examples:
 
-Sweep over sky area (both fisher and dali)
+Sweep over sky area (fisher)
 python demo-scripts/11_run_cluster_sweep_overlay.py \
-  --forecast_mode both \
+  --forecast_mode fisher \
   --params Omega_m sigma8 \
   --sweep sky_area=440,1000,2000,5000,10000 \
   --output skyarea_overlay.pdf
 
-Sweep over nuisance parameters (dali only):
+Sweep over nuisance parameters (dali):
 python demo-scripts/run_cluster_sweep_overlay.py \
   --forecast_mode dali \
   --params Omega_m sigma8 mu0 sigma0 \
   --sweep mu0=0.8,1.0,1.2 sigma0=0.1,0.2,0.3 \
   --output mu0_sigma0_grid.pdf
+
+Sweep over nuisance parameter sigma0:
+python demo-scripts/11_run_cluster_sweep_overlay.py \
+  --forecast_mode dali \
+  --params Omega_m sigma8 mu0 \
+  --sweep mu0=1.1,1.2 \
+  --output mu0_overlay_dali.pdf
+
+Keep in mind DALI computes higher order derivatives so it is slower
+than Fisher.
 """
 
 import sys
@@ -83,7 +96,7 @@ def parse_wrapper_args():
     )
     parser.add_argument(
         "--colormap",
-        default="cmr.rainforest",
+        default="cmr.pride",
     )
     parser.add_argument(
         "--cmap_min",
@@ -255,7 +268,7 @@ def main():
     colors = cmr.take_cmap_colors(
         wrapper_args.colormap,
         len(cases),
-        cmap_range=(wrapper_args.cmap_min, wrapper_args.cmap_max),
+        cmap_range=(0.5, 0.85),
         return_fmt="hex",
     )
 
@@ -347,10 +360,11 @@ def main():
 
     width = 3.8 if len(names) <= 2 else 7.0
     plotter = getdist_plots.get_subplot_plotter(width_inch=width)
-    plotter.settings.linewidth_contour = 1.6
-    plotter.settings.linewidth = 1.6
+    plotter.settings.linewidth_contour = 2.5
+    plotter.settings.linewidth = 2.5
     plotter.settings.figure_legend_frame = False
     plotter.settings.legend_rect_border = False
+    plotter.settings.legend_fontsize = 16
 
     plotter.triangle_plot(
         plot_objects,
