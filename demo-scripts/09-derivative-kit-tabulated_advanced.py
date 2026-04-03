@@ -43,7 +43,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from derivkit.derivative_kit import DerivativeKit
-from derivkit.tabulated_model.one_d import Tabulated1DModel
+from derivkit.derivatives.tabulated_model.one_d import Tabulated1DModel
 from utils.style import DEFAULT_COLORS, apply_plot_style
 
 
