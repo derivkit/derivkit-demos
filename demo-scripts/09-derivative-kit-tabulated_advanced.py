@@ -15,7 +15,7 @@ Functions
 What it does
 ------------
 1) Creates a noisy tabulated table on a uniform x-grid (noise in y; optional jitter in x).
-   This way we emulate real case scenario tabulated data with measurement errors.
+   This way we emulate a realistic tabulated dataset with measurement errors.
 2) Evaluates dy/dx at many x0 points using:
      - finite differences + Ridders
      - adaptive fit
@@ -27,7 +27,7 @@ What it does
 
 Usage
 -----
-    $ python demo-scripts/09-derivative-kit-tabulated_advanced.py
+    python demo-scripts/09-derivative-kit-tabulated_advanced.py
 """
 
 from __future__ import annotations
@@ -42,8 +42,7 @@ import numpy as np
 # Make repo root importable so `utils.style` works when running from demo-scripts/
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from derivkit.derivative_kit import DerivativeKit
-from derivkit.tabulated_model.one_d import Tabulated1DModel
+from derivkit import DerivativeKit
 from utils.style import DEFAULT_COLORS, apply_plot_style
 
 
@@ -54,7 +53,7 @@ def sin_func(x: np.ndarray) -> np.ndarray:
         x: input array.
 
     Returns:
-
+        Array containing sin(x).
     """
     return np.sin(x)
 
@@ -74,9 +73,6 @@ def df_truth(x: np.ndarray) -> np.ndarray:
 def ensure_plots_dir() -> Path:
     """Ensures the plots/ directory exists and returns its Path.
 
-    Args:
-        None.
-
     Returns:
         Path to plots/ directory.
     """
@@ -86,8 +82,7 @@ def ensure_plots_dir() -> Path:
 
 
 def metrics(estimate: np.ndarray, truth: np.ndarray) -> dict[str, float]:
-    """Colmputes the root mean square error (RMSE), mean absolute error (MAE),
-    and maximum absolute error (MaxAE) between estimate and truth, ignoring NaNs.
+    """Computes RMSE, MAE, and MaxAE between estimate and truth, ignoring NaNs.
 
     RMSE is computed as sqrt(mean((estimate - truth)^2)).
     MAE is computed as mean(|estimate - truth|).
@@ -111,6 +106,7 @@ def metrics(estimate: np.ndarray, truth: np.ndarray) -> dict[str, float]:
         "maxae": float(np.max(ae)),
     }
 
+
 def tex_sci(x: float, sig: int = 2) -> str:
     """Return TeX string like 1.23\\times 10^{4} (or 0).
 
@@ -130,7 +126,6 @@ def tex_sci(x: float, sig: int = 2) -> str:
     exp = int(np.floor(np.log10(ax)))
     mant = ax / (10.0 ** exp)
 
-    # If exponent is 0, don't show ×10^{0}
     if exp == 0:
         return rf"{sgn}{mant:.{sig}f}"
 
@@ -139,7 +134,8 @@ def tex_sci(x: float, sig: int = 2) -> str:
 
 def compute_method_over_grid(
     x0_grid: np.ndarray,
-    model: Tabulated1DModel,
+    x_tab: np.ndarray,
+    y_tab: np.ndarray,
     method_name: str,
     **extra_kwargs: Any,
 ) -> tuple[np.ndarray, np.ndarray]:
@@ -147,7 +143,8 @@ def compute_method_over_grid(
 
     Args:
         x0_grid: array of x0 points where to compute the derivative.
-        model: Tabulated1DModel instance to differentiate.
+        x_tab: tabulated x array.
+        y_tab: tabulated y array.
         method_name: derivative method name (e.g., "finite", "adaptive").
         extra_kwargs: extra kwargs to pass to differentiate().
 
@@ -159,7 +156,7 @@ def compute_method_over_grid(
     errs = np.full_like(x0_grid, np.nan, dtype=float)
 
     for i, x0 in enumerate(x0_grid):
-        dk = DerivativeKit(function=model, x0=float(x0))
+        dk = DerivativeKit(x0=float(x0), tab_x=x_tab, tab_y=y_tab)
         try:
             out = dk.differentiate(
                 method=method_name,
@@ -168,8 +165,8 @@ def compute_method_over_grid(
                 **extra_kwargs,
             )
             val, err = out
-            slopes[i] = np.asarray(val).reshape(-1)[0]
-            errs[i] = np.asarray(err).reshape(-1)[0]
+            slopes[i] = float(np.asarray(val).reshape(-1)[0])
+            errs[i] = float(np.asarray(err).reshape(-1)[0])
         except TypeError:
             try:
                 val = dk.differentiate(
@@ -177,7 +174,7 @@ def compute_method_over_grid(
                     order=1,
                     **extra_kwargs,
                 )
-                slopes[i] = np.asarray(val).reshape(-1)[0]
+                slopes[i] = float(np.asarray(val).reshape(-1)[0])
                 errs[i] = np.nan
             except Exception as exc2:
                 print(f"[warning] {method_name} failed at i={i} (x0={x0}): {exc2}")
@@ -197,13 +194,13 @@ def main() -> None:
 
     rng = np.random.default_rng(42)
 
-    # Here we build the noisy tabulated model
+    # Here we build the noisy tabulated data
     n_tab = 70  # number of tabulated points
     x_tab = np.linspace(0.0, 2.0 * np.pi, n_tab)
     y_clean = sin_func(x_tab)
 
     y_noise_sigma = 0.05  # noise level in y
-    x_jitter_sigma = 0  # noise level in x; set to 0 to disable x-jitter
+    x_jitter_sigma = 0.0  # noise level in x; set to 0 to disable x-jitter
 
     y_noisy = y_clean + rng.normal(0.0, y_noise_sigma, size=y_clean.shape)
 
@@ -215,8 +212,6 @@ def main() -> None:
     else:
         x_noisy = x_tab.copy()
 
-    model_noisy = Tabulated1DModel(x_noisy, y_noisy, extrapolate=True)
-
     # Derivative evaluation grid (interior)
     n_eval = 50  # number of derivative eval points
     x0 = np.linspace(x_tab.min() + 0.15, x_tab.max() - 0.15, n_eval)  # avoid edges
@@ -224,10 +219,10 @@ def main() -> None:
 
     # Compute: finite+Ridders and adaptive on noisy table
     slopes_fr, errs_fr = compute_method_over_grid(
-        x0, model_noisy, "finite", extrapolation="ridders"
+        x0, x_noisy, y_noisy, "finite", extrapolation="ridders"
     )
     slopes_ad, errs_ad = compute_method_over_grid(
-        x0, model_noisy, "adaptive", n_points=27, spacing=0.25
+        x0, x_noisy, y_noisy, "adaptive", n_points=27, spacing=0.25
     )
 
     m_fr = metrics(slopes_fr, truth)
@@ -235,25 +230,23 @@ def main() -> None:
 
     print("\nDerivative accuracy vs truth:")
     print(f"finite (Ridders): RMSE={m_fr['rmse']:.3e}  MAE={m_fr['mae']:.3e}  MaxAE={m_fr['maxae']:.3e}")
-    print(f"adaptive : RMSE={m_ad['rmse']:.3e}  MAE={m_ad['mae']:.3e}  MaxAE={m_ad['maxae']:.3e}")
+    print(f"adaptive        : RMSE={m_ad['rmse']:.3e}  MAE={m_ad['mae']:.3e}  MaxAE={m_ad['maxae']:.3e}")
 
     # Plotting
     outdir = ensure_plots_dir()
     base = "tabulated_derivatives"
 
-    # User-specified colors:
     c_truth = DEFAULT_COLORS["red"]
     c_finite = DEFAULT_COLORS["yellow"]
     c_adaptive = DEFAULT_COLORS["blue"]
 
-    # Common "open circle" marker kwargs
     oc_finite = dict(marker="o", mfc="none", mec=c_finite, mew=1.2)
     oc_adapt = dict(marker="o", mfc="none", mec=c_adaptive, mew=1.2)
     oc_table = dict(marker="o", mfc="none", mec=c_finite, mew=1.2)
 
     # Plot 1: noisy function table vs truth
-    x_dense = np.linspace(x_tab.min(), x_tab.max(), 800)  # dense grid for truth
-    y_dense = sin_func(x_dense)  # truth values on a dense grid
+    x_dense = np.linspace(x_tab.min(), x_tab.max(), 800)
+    y_dense = sin_func(x_dense)
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -263,7 +256,7 @@ def main() -> None:
         x_noisy,
         y_noisy,
         linestyle="--",
-        linewidth=1.,
+        linewidth=1.0,
         ms=5.0,
         label=rf"$y=\sin(x)+\mathcal{{N}}(0,{y_noise_sigma:g}^2)$",
         color=c_finite,
@@ -282,14 +275,14 @@ def main() -> None:
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
 
-    ax.plot(x0, truth, lw=2.5, label="truth $\cos(x)$", color=c_truth)
+    ax.plot(x0, truth, lw=2.5, label=r"truth $\cos(x)$", color=c_truth)
 
     ax.errorbar(
         x0,
         slopes_fr,
         yerr=errs_fr,
         linestyle="--",
-        linewidth=1.,
+        linewidth=1.0,
         capsize=2,
         label="finite (Ridders)",
         color=c_finite,
@@ -302,7 +295,7 @@ def main() -> None:
         slopes_ad,
         yerr=errs_ad,
         linestyle="--",
-        linewidth=1.,
+        linewidth=1.0,
         capsize=2,
         label="adaptive",
         color=c_adaptive,
@@ -322,21 +315,20 @@ def main() -> None:
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
 
-    # Build legend labels with TeX math (multiline, no 'e' notation)
     lab_fr = (
-            r"$\mathrm{finite\ (Ridders)}:$"
-            "\n"
-            + rf"$\mathrm{{RMSE}}={tex_sci(m_fr['rmse'])}$"
-              "\n"
-            + rf"$\mathrm{{MAE}}={tex_sci(m_fr['mae'])}$"
+        r"$\mathrm{finite\ (Ridders)}:$"
+        "\n"
+        + rf"$\mathrm{{RMSE}}={tex_sci(m_fr['rmse'])}$"
+        "\n"
+        + rf"$\mathrm{{MAE}}={tex_sci(m_fr['mae'])}$"
     )
 
     lab_ad = (
-            r"$\mathrm{adaptive}:$"
-            "\n"
-            + rf"$\mathrm{{RMSE}}={tex_sci(m_ad['rmse'])}$"
-              "\n"
-            + rf"$\mathrm{{MAE}}={tex_sci(m_ad['mae'])}$"
+        r"$\mathrm{adaptive}:$"
+        "\n"
+        + rf"$\mathrm{{RMSE}}={tex_sci(m_ad['rmse'])}$"
+        "\n"
+        + rf"$\mathrm{{MAE}}={tex_sci(m_ad['mae'])}$"
     )
 
     ax.semilogy(
@@ -361,7 +353,7 @@ def main() -> None:
     )
 
     ax.set_xlabel("$x$")
-    ax.set_ylabel(r"$\widehat{\sigma}_{f'}(x)$")  # or keep "internal error estimate"
+    ax.set_ylabel(r"$\widehat{\sigma}_{f'}(x)$")
     ax.set_title("Derivative internal error vs noisy tabulated data")
     ax.legend(frameon=True, ncol=1, fontsize=12, loc=4)
     fig.tight_layout()

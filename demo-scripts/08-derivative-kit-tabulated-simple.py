@@ -25,7 +25,7 @@ What it does
 
 Usage
 -----
-    $ python demo-scripts/08-derivative-kit-tabulated-simple.py
+    python demo-scripts/08-derivative-kit-tabulated-simple.py
 """
 
 from __future__ import annotations
@@ -38,8 +38,7 @@ import numpy as np
 # Make repo root importable so DerivKit imports work when running from demo-scripts/
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from derivkit.derivative_kit import DerivativeKit
-from derivkit.tabulated_model.one_d import Tabulated1DModel
+from derivkit import DerivativeKit
 
 
 def main() -> None:
@@ -51,12 +50,10 @@ def main() -> None:
     y_noise_sigma = 0.05  # a 5% noise level
     y_noisy = np.sin(x_tab) + rng.normal(0.0, y_noise_sigma, size=x_tab.shape)
 
-    model = Tabulated1DModel(x_tab, y_noisy, extrapolate=True)
-
     x0 = 0.7  # point to differentiate at
     truth = float(np.cos(x0))  # analytic derivative at x0
 
-    dk = DerivativeKit(function=model, x0=x0)
+    dk = DerivativeKit(x0=x0, tab_x=x_tab, tab_y=y_noisy)
 
     d_fr = float(
         np.asarray(
