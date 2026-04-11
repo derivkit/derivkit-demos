@@ -22,7 +22,7 @@ It contains ready-to-run Python scripts and optional notebooks showcasing core D
 
 ```text
 derivkit-demos/
-├─ scripts/                      # Runnable demo scripts
+├─ scripts/  # Runnable demo scripts
 │  ├─ calculus-kit-advanced.py
 │  ├─ calculus-kit-simple.py
 │  ├─ derivative-kit-advanced.py
@@ -36,15 +36,15 @@ derivkit-demos/
 │  ├─ forecast-kit-fisher-bias.py
 │  └─ forecast-kit-fisher.py
 │
-├─ notebooks/               # Optional notebooks
+├─ notebooks/  # Optional notebooks
 ├─ utils/
-│  └─ style.py                   # Shared Matplotlib style and palette
+│  └─ style.py  # Shared Matplotlib style and palette
 │
-├─ plots/                        # Auto-generated figures (git-ignored)
-├─ run_demo.py                   # Launcher utility for demos
-├─ requirements.txt              # Minimal dependencies
-├─ environment.yaml              # Conda environment file
-├─ pyproject.toml                # Metadata only (repo is not installable)
+├─ plots/  # Auto-generated figures (git-ignored)
+├─ run_demo.py  # Launcher utility for demos
+├─ requirements.txt  # Minimal dependencies
+├─ environment.yaml  # Conda environment file
+├─ pyproject.toml  # Metadata only (repo is not installable)
 ├─ LICENSE
 └─ README.md
 ```
