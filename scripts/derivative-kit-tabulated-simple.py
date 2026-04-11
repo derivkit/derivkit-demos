@@ -25,7 +25,7 @@ What it does
 
 Usage
 -----
-    python demo-scripts/08-derivative-kit-tabulated-simple.py
+    python -m scripts.derivative-kit-tabulated-simple
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ from pathlib import Path
 
 import numpy as np
 
-# Make repo root importable so DerivKit imports work when running from demo-scripts/
+# Make repo root importable so DerivKit imports work when running from scripts/
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from derivkit import DerivativeKit

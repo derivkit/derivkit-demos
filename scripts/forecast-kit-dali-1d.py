@@ -1,56 +1,25 @@
-"""DerivKit — ForecastKit DALI (1D) Demo.
+"""DerivKit — ForecastKit 1D DALI Likelihood Demo.
 
-This demo compares the *exact* Gaussian log-likelihood to two local
-approximations built from ForecastKit tensors:
-  • Fisher (quadratic) using the Fisher information F,
-  • Doublet-DALI using (F, G, H; fisher and doublet-DALI tensors) to include cubic and quartic terms.
-
-Functions
----------
-Model (one parameter → one observable):
-    o(x) = 100 · exp(x²)
-
-Likelihoods (with data variance σ_o²):
-    exact:    log L(x) = -½ · [(o(x) - o(x₀)) / σ_o]²
-    fisher:   log L(x) ≈ -½ · F · (x - x₀)²
-    doublet:  log L(x) ≈ -½ · F · Δx² - ½ · G · Δx³ - ⅛ · H · Δx⁴,
-              where Δx = x - x₀ and (F, G, H) are the 1D tensors.
-
-What it does
-------------
-- Sets fiducial parameter x₀ and data covariance C = [[σ_o²]].
-- Builds Fisher F matrix and DALI tensors (G, H) via :class:`ForecastKit` at x₀.
-- Evaluates:
-    • exact log-likelihood on a dense grid,
-    • fisher on the same dense grid,
-    • doublet-DALI on a sparser window (plotted as markers).
-- Plots all three for visual comparison and prints a sanity check at x = x₀.
-
-Defaults (exact numbers used here)
-----------------------------------
-- x₀ = 0.1
-- C = [[1.0]]  ⇒  σ_o = 1.0
-- dense grid:   linspace(-1, 1, 1000)
-- sparse grid:  linspace(-0.2, 0.2, 100)
-- axes limits:  xlim = (-0.3, 0.6),  ylim = (-0.65, 0.05)
-- output file:  plots/dali_plot.pdf
+Summary
+-------
+This demo shows how to use DerivKit's ForecastKit to build a local DALI
+(Derivative Approximation of the Likelihood; see arXiv:1401.6892)
+expansion of a Gaussian log-likelihood in a simple 1D case and compare it to:
+- the exact log-likelihood,
+- the quadratic Fisher approximation, and
+- the doublet-DALI approximation.
 
 Usage
 -----
-  $ python demo-scripts/07-forecast-kit-dali.py --method adaptive
-  $ python demo-scripts/07-forecast-kit-dali.py --method adaptive --plot
+Run the script version from the command line, for example:
 
-Notes:
------
-- If ``method`` is omitted, the **adaptive** backend is used; you can pass
-  ``--method finite`` (or any registered backend).
-- In 1D, F has shape (1,1), G → (1,1,1), H → (1,1,1,1); the demo reads them
-  as scalars F[0,0], G[0,0,0], H[0,0,0,0].
-- All three curves meet at x = x₀ by construction. With x₀ ≠ 0 the cubic
-  term is generally nonzero, so DALI skews relative to Fisher and typically
-  tracks the exact curve better away from x₀.
+    python -m scripts.forecast-kit-dali-1d --method adaptive
+    python -m scripts.forecast-kit-dali-1d --method adaptive --plot
+
+Requirements
+------------
+- derivkit installed and importable in your Python environment.
 """
-
 
 from __future__ import annotations
 
@@ -60,7 +29,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from derivkit.forecast_kit import ForecastKit
+from derivkit import ForecastKit
 from utils.style import DEFAULT_COLORS, apply_plot_style
 
 
@@ -107,20 +76,23 @@ def loglike_1d_approx(tensors: list[np.ndarray], fiducial_x: float, x: float) ->
     """
     dx = x - fiducial_x
     logl = 0.0
+
     if len(tensors) >= 1:
         f = np.asarray(tensors[0])
         logl += -0.5 * float(f[0, 0]) * dx**2
+
     if len(tensors) >= 3:
         g = np.asarray(tensors[1])
         h = np.asarray(tensors[2])
         logl += -0.5 * float(g[0, 0, 0]) * dx**3
         logl += -0.125 * float(h[0, 0, 0, 0]) * dx**4
+
     return float(logl)
 
 
 def parse_args():
     """Parse command-line arguments."""
-    ap = argparse.ArgumentParser(description="forecastkit dali 1d (exact numbers)")
+    ap = argparse.ArgumentParser(description="forecastkit dali demo (1d)")
     ap.add_argument("--plot", action="store_true", help="show the figure instead of saving")
     ap.add_argument(
         "--method",
@@ -133,10 +105,9 @@ def parse_args():
 
 
 def main() -> None:
-    """Runs the ForecastKit DALI 1D demo."""
+    """Run the 1D ForecastKit DALI demo."""
     args = parse_args()
 
-    # exact numbers you provided
     observables = test_model_1d
     fiducial_values = [0.1]
     covmat = np.array([[1.0]], dtype=float)
@@ -147,13 +118,17 @@ def main() -> None:
     xgrid = np.linspace(-1.0, 1.0, 1000)
     xgrid_sparse = np.linspace(-0.2, 0.2, 100)
 
-    # forecast kit tensors
-    fk = ForecastKit(function=observables, theta0=np.array(fiducial_values, dtype=float), cov=covmat)
-    fisher_matrix = fk.fisher(method=args.method)  # (1, 1)
-    dali_g, dali_h = fk.dali(method=args.method)  # (1,1,1), (1,1,1,1)
-    tensors = [fisher_matrix, dali_g, dali_h]
+    fk = ForecastKit(
+        function=observables,
+        theta0=np.array(fiducial_values, dtype=float),
+        cov=covmat,
+    )
 
-    # likelihoods
+    fisher_matrix = fk.fisher(method=args.method)
+    dali_1d = fk.dali(method=args.method, forecast_order=2)
+    dali_d1, dali_d2 = dali_1d[2]
+    tensors = [fisher_matrix, dali_d1, dali_d2]
+
     exact_like = [loglike_1d_exact(sigma_o, fiducial_x, x) for x in xgrid]
     fisher_like = [loglike_1d_approx([fisher_matrix], fiducial_x, x) for x in xgrid]
     dali_like_sparse = [loglike_1d_approx(tensors, fiducial_x, x) for x in xgrid_sparse]
@@ -167,8 +142,15 @@ def main() -> None:
 
     ax.plot(xgrid, exact_like, label="Exact Likelihood", linewidth=3, color=red)
     ax.plot(xgrid, fisher_like, label="Fisher Matrix", linewidth=3, linestyle="-", color=yellow)
-    ax.plot(xgrid_sparse, dali_like_sparse, label="Doublet DALI", markersize=6,
-            color=blue, linestyle="--", linewidth=3)
+    ax.plot(
+        xgrid_sparse,
+        dali_like_sparse,
+        label="Doublet DALI",
+        markersize=6,
+        color=blue,
+        linestyle="--",
+        linewidth=3,
+    )
 
     ax.set_title(r"$\mathrm{observable}= 100 \cdot e^{x^2}$", fontsize=20)
     ax.set_xlabel(r"$x$", fontsize=20)
@@ -181,8 +163,8 @@ def main() -> None:
 
     out = Path("plots/dali_plot_1d.pdf")
     out.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(out, dpi=args.dpi, bbox_inches="tight")  # PDF
-    plt.savefig(out.with_suffix(".png"), dpi=args.dpi, bbox_inches="tight")  # PNG
+    plt.savefig(out, dpi=args.dpi, bbox_inches="tight")
+    plt.savefig(out.with_suffix(".png"), dpi=args.dpi, bbox_inches="tight")
     print(f"saved: {out} and {out.with_suffix('.png')}")
 
     if args.plot:
@@ -190,10 +172,10 @@ def main() -> None:
     else:
         plt.close(fig)
 
-    # sanity at x0
     exact_x0 = loglike_1d_exact(sigma_o, fiducial_x, fiducial_x)
     fisher_x0 = loglike_1d_approx([fisher_matrix], fiducial_x, fiducial_x)
     dali_x0 = loglike_1d_approx(tensors, fiducial_x, fiducial_x)
+
     print("\nsanity at fiducial x0:")
     print(f"  exact   : {exact_x0:.6e}")
     print(f"  fisher  : {fisher_x0:.6e}")

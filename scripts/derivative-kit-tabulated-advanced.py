@@ -27,7 +27,7 @@ What it does
 
 Usage
 -----
-    python demo-scripts/09-derivative-kit-tabulated_advanced.py
+    python -m scripts.derivative-kit-tabulated-advanced
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ from typing import Any
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Make repo root importable so `utils.style` works when running from demo-scripts/
+# Make repo root importable so `utils.style` works when running from scripts/
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from derivkit import DerivativeKit

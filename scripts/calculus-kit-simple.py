@@ -25,7 +25,7 @@ Notes:
 
 Usage
 -----
-    $ python demo-scripts/03-calculus-kit-simple.py
+    $ python -m scripts.calculus-kit-simple
 
 Requirements
 ------------
@@ -36,7 +36,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from derivkit.calculus_kit import CalculusKit
+from derivkit import CalculusKit
 
 
 def rosenbrock(x: np.ndarray, a: float = 1.0, b: float = 100.0) -> float:

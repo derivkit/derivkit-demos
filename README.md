@@ -130,7 +130,7 @@ python run_demo.py fisher-bias -- --method adaptive
 
 Run directly:
 ```bash
-python demo-scripts/05-forecast-kit-fisher.py --plot
+python scripts/forecast-kit-fisher.py --plot
 ```
 
 > The `--` separator passes additional arguments directly to the demo.

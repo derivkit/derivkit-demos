@@ -28,7 +28,7 @@ Notes:
 
 Usage
 -----
-    $ python demo-scripts/01-derivative-kit-simple.py
+    $ python -m scripts.derivative-kit-simple
 
 Requirements
 ------------
@@ -38,7 +38,7 @@ Requirements
 
 from __future__ import annotations
 
-from derivkit.derivative_kit import DerivativeKit
+from derivkit import DerivativeKit
 
 
 def simple_function(x: float) -> float:

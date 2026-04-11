@@ -18,7 +18,7 @@ Here list any important notes about the demo.
 
 Usage
 -----
-    $ python demo-scripts/<filename>.py
+    $ python scripts/<filename>.py
 
 Requirements
 ------------

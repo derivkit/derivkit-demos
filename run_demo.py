@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 ROOT  = Path(__file__).resolve().parent
-DEMOS = ROOT / "demo-scripts"
+DEMOS = ROOT / "scripts"
 UTILS = ROOT / "utils"
 
 def _norm(s: str) -> str:
@@ -50,7 +50,7 @@ def resolve_demo(query: str):
     """Resolves a demo script from a query string."""
     entries = _catalog()
     if not entries:
-        raise SystemExit("No demos found under demo-scripts/")
+        raise SystemExit("No demos found under scripts/")
 
     qnorm = _norm(query)
     # 1) exact filename or stem

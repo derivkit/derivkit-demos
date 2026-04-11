@@ -26,14 +26,14 @@ What it does
 
 Usage
 -----
-    $ python demo-scripts/03-calculus-kit-advanced.py
+    $ python -m scripts.calculus-kit-advanced
 """
 
 from __future__ import annotations
 
 import numpy as np
 
-from derivkit.calculus_kit import CalculusKit
+from derivkit import CalculusKit
 
 
 def f_scalar_function(x: np.ndarray) -> float:

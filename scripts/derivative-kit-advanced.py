@@ -28,7 +28,7 @@ Notes:
 
 Usage
 -----
-    $ python demo-scripts/02-demo_derivative-kit_advanced.py
+    $ python -m scripts.derivative-kit-advanced
 
 Requirements
 ------------
@@ -39,8 +39,7 @@ Requirements
 from __future__ import annotations
 
 import numpy as np
-
-from derivkit.derivative_kit import DerivativeKit
+from derivkit import DerivativeKit
 
 
 def damped_sine_plus_cubic(x: float) -> float:
