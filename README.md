@@ -1,25 +1,10 @@
-
-
 <p align="center">
   <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-red.png" width="70" alt="DerivKit red"/>
   &nbsp;&nbsp;
   <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-blue.png" width="70" alt="DerivKit blue"/>
   &nbsp;&nbsp;
   <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-yellow.png" width="70" alt="DerivKit yellow"/>
-<img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-red.png" width="70" alt="DerivKit red"/>
-  &nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-blue.png" width="70" alt="DerivKit blue"/>
-  &nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-yellow.png" width="70" alt="DerivKit yellow"/>
-<img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-red.png" width="70" alt="DerivKit red"/>
-  &nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-blue.png" width="70" alt="DerivKit blue"/>
-  &nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-yellow.png" width="70" alt="DerivKit yellow"/>
-<img src="https://raw.githubusercontent.com/derivkit/derivkit-logo/main/png/logo-red.png" width="70" alt="DerivKit red"/>
-  &nbsp;&nbsp;
 </p>
-
 
 ---
 
@@ -27,42 +12,39 @@
 
 [![Open CCL demo in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/derivkit/derivkit-demos/main?labpath=demo-notebooks/10-derivkit-ccl-demo.ipynb)
 
-
 **Runnable demo collection** for the [DerivKit](https://github.com/derivkit/derivkit) ecosystem.  
-This repository is **non-installable by design** — just clone, create an environment, and run.  
-It contains ready-to-execute Python scripts and optional Jupyter notebooks showcasing
-key DerivKit modules such as **DerivativeKit**, **CalculusKit**, and **ForecastKit**.
+This repository is **non-installable by design** — just clone it, create an environment, and run the demos in place.  
+It contains ready-to-run Python scripts and optional notebooks showcasing core DerivKit modules such as **DerivativeKit**, **CalculusKit**, and **ForecastKit**.
 
 ---
 
-##  Repository structure
+## Repository structure
 
-```
+```text
 derivkit-demos/
-├─ demo-scripts/                 # Runnable demo scripts (no install required)
-│  ├─ 01-derivative-kit-simple.py
-│  ├─ 02-derivative-kit-advanced.py
-│  ├─ 03-calculus-kit-simple.py
-│  ├─ 04-calculus-kit-advanced.py
-│  ├─ 05-forecast-kit-fisher.py
-│  ├─ 06-forecast-kit-fisher-bias.py
-│  ├─ 07-forecast-kit-dali.py
-│  ├─ 08-derivative-kit-tabulated-simple.py
-│  └─ 09-derivative-kit-tabulated-advanced.py
-
+├─ scripts/                      # Runnable demo scripts
+│  ├─ calculus-kit-advanced.py
+│  ├─ calculus-kit-simple.py
+│  ├─ derivative-kit-advanced.py
+│  ├─ derivative-kit-simple.py
+│  ├─ derivative-kit-tabulated-advanced.py
+│  ├─ derivative-kit-tabulated-simple.py
+│  ├─ derivkit-cluster-counts-forecast.py
+│  ├─ derivkit-cluster-counts-sweep.py
+│  ├─ forecast-kit-dali-1d.py
+│  ├─ forecast-kit-dali-2d.py
+│  ├─ forecast-kit-fisher-bias.py
+│  └─ forecast-kit-fisher.py
 │
-├─ demo-notebooks/               # Optional notebooks (not required for running)
+├─ demo-notebooks/               # Optional notebooks
 ├─ utils/
-│  └─ style.py                   # Shared Matplotlib style and color palette
+│  └─ style.py                   # Shared Matplotlib style and palette
 │
 ├─ plots/                        # Auto-generated figures (git-ignored)
-├─ templates/                    # Plot or doc templates for demos
-├─ forecast_demo.py              # Combined example launcher for ForecastKit demos
-├─ run_demo.py                   # Launcher utility to run any demo by ID or name
-│
-├─ requirements.txt              # Minimal dependencies (DerivKit, NumPy, SciPy, Matplotlib)
-├─ environment.yaml              # Conda environment file (optional)
-├─ pyproject.toml                # Metadata only (not installable)
+├─ run_demo.py                   # Launcher utility for demos
+├─ requirements.txt              # Minimal dependencies
+├─ environment.yaml              # Conda environment file
+├─ pyproject.toml                # Metadata only (repo is not installable)
 ├─ LICENSE
 └─ README.md
 ```
@@ -83,9 +65,11 @@ derivkit-demos/
 **ForecastKit**
 - **Fisher Information** — analytic vs. numerical ellipses.
 - **Fisher Bias** — systematic offset → parameter shift (Δθ).
-- **DALI** — Fisher vs. Doublet-DALI vs. exact log-likelihood.
+- **DALI** — nonlinear likelihood expansions beyond Fisher.
+- **Cluster counts** — forecasting and parameter sweeps for cluster-count examples
 
-Figures are automatically saved to `plots/` as both `.pdf` and `.png` unless `--plot` is used to display them interactively.
+Figures are automatically saved to `plots/` as both `.pdf` and `.png` unless `--plot` is
+used to display them interactively.
 
 ---
 
@@ -119,18 +103,30 @@ python run_demo.py --list
 
 Run a specific demo:
 ```bash
-python run_demo.py 07 -- --plot
+python run_demo.py forecast-kit-fisher
+python run_demo.py forecast-kit-fisher-bias
+python run_demo.py forecast-kit-dali-1d
+python run_demo.py forecast-kit-dali-2d
 ```
 
 Run by fuzzy name:
 ```bash
+python run_demo.py fisher
+python run_demo.py fisher-bias
+python run_demo.py dali
+python run_demo.py cluster
+```
+
+Pass extra arguments through to the demo with --:
+```bash
 python run_demo.py dali -- --plot
-python run_demo.py fisher-bias -- --method adaptive
+python run_demo.py forecast-kit-dali-2d -- --method adaptive
+python run_demo.py forecast-kit-fisher-bias -- --plot
 ```
 
 Run directly:
 ```bash
-python scripts/forecast-kit-fisher.py --plot
+python -m scripts.forecast-kit-fisher.py --plot
 ```
 
 > The `--` separator passes additional arguments directly to the demo.
@@ -172,11 +168,6 @@ ruff check --fix .
 
 Add or modify demos under `demo-scripts/`, following the numbered naming scheme (`NN-topic-name.py`) and including a top-level docstring explaining purpose, usage, and key results.
 
----
-
-##  License
-
-MIT — see [LICENSE](LICENSE).
 
 ---
 
@@ -196,6 +187,11 @@ If you use **derivkit** in your research, please cite:
 
 ```
 
+---
+
+##  License
+
+MIT — see [LICENSE](LICENSE).
 ---
 
 ##  Acknowledgements

@@ -2,3 +2,7 @@ derivkit
 numpy
 scipy
 matplotlib
+pyccl
+lsstdesc-crow
+tjpcov
+getdist
