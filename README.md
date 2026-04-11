@@ -36,7 +36,7 @@ derivkit-demos/
 │  ├─ forecast-kit-fisher-bias.py
 │  └─ forecast-kit-fisher.py
 │
-├─ demo-notebooks/               # Optional notebooks
+├─ notebooks/               # Optional notebooks
 ├─ utils/
 │  └─ style.py                   # Shared Matplotlib style and palette
 │
