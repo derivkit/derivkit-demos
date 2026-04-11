@@ -10,7 +10,7 @@
 
 # DerivKit Demos
 
-[![Open CCL demo in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/derivkit/derivkit-demos/main?labpath=demo-notebooks/10-derivkit-ccl-demo.ipynb)
+[![Open CCL demo in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/derivkit/derivkit-demos/main?labpath=notebooks/forecast-kit-cosmic-shear-ccl.ipynb)
 
 **Runnable demo collection** for the [DerivKit](https://github.com/derivkit/derivkit) ecosystem.  
 This repository is **non-installable by design** — just clone it, create an environment, and run the demos in place.  
