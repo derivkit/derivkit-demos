@@ -13,43 +13,43 @@ mass–observable relation through MurataUnbinned. It is meant as a minimal
 working example rather than a fully realistic cluster analysis.
 
 Basic usage (from the project root):
-    python -m scripts.derivkit-cluster-counts-forecast
-    python -m scripts.derivkit-cluster-counts-forecast --forecast_mode fisher
-    python -m scripts.derivkit-cluster-counts-forecast --forecast_mode dali
-    python -m scripts.derivkit-cluster-counts-forecast --forecast_mode both
+    python -m scripts.forecast-kit-cluster-counts-forecast
+    python -m scripts.forecast-kit-cluster-counts-forecast --forecast_mode fisher
+    python -m scripts.forecast-kit-cluster-counts-forecast --forecast_mode dali
+    python -m scripts.forecast-kit-cluster-counts-forecast --forecast_mode both
 
 Alternatively, from inside scripts:
-    python derivkit-cluster-counts-forecast.py --forecast_mode both
+    python forecast-kit-cluster-counts-forecast.py --forecast_mode both
 
 Choose which parameters to vary:
-    python -m scripts.derivkit-cluster-counts-forecast --params Omega_m sigma8
-    python -m scripts.derivkit-cluster-counts-forecast --params Omega_m sigma8 mu0 mu1 mu2 sigma0 sigma1 sigma2
+    python -m scripts.forecast-kit-cluster-counts-forecast --params Omega_m sigma8
+    python -m scripts.forecast-kit-cluster-counts-forecast --params Omega_m sigma8 mu0 mu1 mu2 sigma0 sigma1 sigma2
 
 Override fiducial parameter values:
-    python -m scripts.derivkit-cluster-counts-forecast --Omega_m 0.31 --sigma8 0.83
-    python -m scripts.derivkit-cluster-counts-forecast --mu0 14.6 --mu1 0.0 --mu2 0.0 --sigma0 0.25 --sigma1 0.0 --sigma2 0.0
+    python -m scripts.forecast-kit-cluster-counts-forecast --Omega_m 0.31 --sigma8 0.83
+    python -m scripts.forecast-kit-cluster-counts-forecast --mu0 14.6 --mu1 0.0 --mu2 0.0 --sigma0 0.25 --sigma1 0.0 --sigma2 0.0
 
 Change binning:
-    python -m scripts.derivkit-cluster-counts-forecast --n-z-bins 3 --n-proxy-bins 3
-    python -m scripts.derivkit-cluster-counts-forecast --n-z-bins 4 --n-proxy-bins 4
+    python -m scripts.forecast-kit-cluster-counts-forecast --n-z-bins 3 --n-proxy-bins 3
+    python -m scripts.forecast-kit-cluster-counts-forecast --n-z-bins 4 --n-proxy-bins 4
 
 Run Fisher only without plotting:
-    python -m scripts.derivkit-cluster-counts-forecast --forecast_mode fisher --no-plot
+    python -m scripts.forecast-kit-cluster-counts-forecast --forecast_mode fisher --no-plot
 
 Run DALI with a different stepsize:
-    python -m scripts.derivkit-cluster-counts-forecast --forecast_mode dali --stepsize 1e-2
+    python -m scripts.forecast-kit-cluster-counts-forecast --forecast_mode dali --stepsize 1e-2
 
 Use 10 percent Gaussian priors on all active parameters:
-    python -m scripts.derivkit-cluster-counts-forecast --forecast_mode fisher --prior-frac 0.1
-    python -m scripts.derivkit-cluster-counts-forecast --forecast_mode both --prior-frac 0.1
+    python -m scripts.forecast-kit-cluster-counts-forecast --forecast_mode fisher --prior-frac 0.1
+    python -m scripts.forecast-kit-cluster-counts-forecast --forecast_mode both --prior-frac 0.1
 
 Use custom Gaussian priors on selected parameters:
-    python -m scripts.derivkit-cluster-counts-forecast --forecast_mode both \\
+    python -m scripts.forecast-kit-cluster-counts-forecast --forecast_mode both \\
         --prior-params Omega_m sigma8 mu0 sigma0 \\
         --prior-sigmas 0.03 0.05 0.2 0.05
 
 Add finite DALI prior bounds at +/- 5 sigma around the fiducial:
-    python -m scripts.derivkit-cluster-counts-forecast --forecast_mode dali --prior-frac 0.1 --prior-nsigma-bounds 5
+    python -m scripts.forecast-kit-cluster-counts-forecast --forecast_mode dali --prior-frac 0.1 --prior-nsigma-bounds 5
 
 Output plot:
     Saved as toy_crow_counts_triangle.pdf (or use --output to change name)

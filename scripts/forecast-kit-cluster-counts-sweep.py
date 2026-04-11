@@ -2,7 +2,7 @@
 This script builds a simple cluster-count model and computes parameter
 constraints using either Fisher, DALI, or both.
 
-This script calls derivkit-cluster-counts-forecast.py and computes posterior contours
+This script calls forecast-kit-cluster-counts-forecast.py and computes posterior contours
 for a user-specified sweep of parameters. The resulting contours are
 overlaid in a single plot to illustrate how the constraints change as
 the parameters are varied.
@@ -13,7 +13,7 @@ that are cirrently accessible via command-line arguments.
 Examples:
 
 Sweep over sky area (fisher)
-python scripts/derivkit-cluster-counts-sweep.py \
+python -m scripts.forecast-kit-cluster-counts-sweep \
   --forecast_mode fisher \
   --params Omega_m sigma8 \
   --sweep sky_area=440,1000,2000,5000,10000 \
@@ -27,7 +27,7 @@ python scripts/run_cluster_sweep_overlay.py \
   --output mu0_sigma0_grid.pdf
 
 Sweep over nuisance parameter sigma0:
-python scripts/derivkit-cluster-counts-sweep.py \
+python -m scripts.forecast-kit-cluster-counts-sweep \
   --forecast_mode dali \
   --params Omega_m sigma8 mu0 \
   --sweep mu0=1.1,1.2 \
@@ -50,7 +50,7 @@ from getdist import plots as getdist_plots
 
 def load_cluster_demo_module():
     here = Path(__file__).resolve().parent
-    script_path = here / "derivkit-cluster-counts-forecast.py"
+    script_path = here / "forecast-kit-cluster-counts-forecast.py"
 
     spec = importlib.util.spec_from_file_location("cluster_counts_demo", script_path)
     module = importlib.util.module_from_spec(spec)
@@ -74,7 +74,7 @@ def parse_wrapper_args():
         "--params",
         nargs="+",
         default=["Omega_m", "sigma8"],
-        help="Active forecast parameters passed to derivkit-cluster-counts-forecast.py",
+        help="Active forecast parameters passed to forecast-kit-cluster-counts-forecast.py",
     )
     parser.add_argument(
         "--sweep",
@@ -197,10 +197,10 @@ def format_case_label(case):
 def build_demo_args(demo_module, wrapper_args, case):
     """
     Reuse the original demo parser so we inherit all defaults from
-    derivkit-cluster-counts-forecast.py instead of copying them here.
+    forecast-kit-cluster-counts-forecast.py instead of copying them here.
     """
     argv = [
-        "derivkit-cluster-counts-forecast.py",
+        "forecast-kit-cluster-counts-forecast.py",
         "--forecast_mode", wrapper_args.forecast_mode,
         "--params", *wrapper_args.params,
         "--no-plot",

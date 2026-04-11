@@ -29,8 +29,9 @@ derivkit-demos/
 │  ├─ derivative-kit-simple.py
 │  ├─ derivative-kit-tabulated-advanced.py
 │  ├─ derivative-kit-tabulated-simple.py
-│  ├─ derivkit-cluster-counts-forecast.py
-│  ├─ derivkit-cluster-counts-sweep.py
+│  ├─ forecast-kit-cosmic-shear-ccl.py
+│  ├─ forecast-kit-cluster-counts-forecast.py
+│  ├─ forecast-kit-cluster-counts-sweep.py
 │  ├─ forecast-kit-dali-1d.py
 │  ├─ forecast-kit-dali-2d.py
 │  ├─ forecast-kit-fisher-bias.py
@@ -67,6 +68,7 @@ derivkit-demos/
 - **Fisher Bias** — systematic offset → parameter shift (Δθ).
 - **DALI** — nonlinear likelihood expansions beyond Fisher.
 - **Cluster counts** — forecasting and parameter sweeps for cluster-count examples
+- **Cosmic shear with pyCCL** — forecast for cosmic shear with pyccl
 
 Figures are automatically saved to `plots/` as both `.pdf` and `.png` unless `--plot` is
 used to display them interactively.
