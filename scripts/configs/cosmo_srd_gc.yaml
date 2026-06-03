@@ -1,0 +1,58 @@
+# configs/gc_cosmo_fisher.yaml
+
+cosmology:
+  Omega_c: 0.2664
+  Omega_b: 0.0492
+  Omega_k: 0.0
+  h: 0.6727
+  n_s: 0.9645
+  sigma8: 0.831
+  w0: -1.0
+  wa: 0.0
+
+  Neff: 3.044
+  T_CMB: 2.7255
+  T_ncdm: 0.71611
+
+  matter_power_spectrum: halofit
+  transfer_function: eisenstein_hu
+
+nuisance:
+  bias_prefactor: 1.0
+
+fisher:
+  var_pars:
+    - Omega_m
+    - Omega_b
+    - h
+    - n_s
+    - sigma8
+    - w0
+    - wa
+    - mean_offset
+    - scatter_scale
+
+  derivative:
+    method: finite
+    kwargs:
+      extrapolation: ridders
+      stepsize: 0.01
+
+  dali:
+    positive_params:
+      - scatter_scale
+      - sigma8
+      - h
+
+  gaussian_priors:
+    Omega_m: 0.2
+    Omega_c: 0.2
+    Omega_b: 0.006
+    h: 0.063
+    n_s: 0.08
+    sigma8: 0.14
+    w0: 0.8
+    wa: 2.0
+    mean_offset: 0.01
+    scatter_scale: 0.003
+    bias_prefactor: 0.30
