@@ -28,3 +28,4 @@ plots/
 # --- IDE/editor ---
 .idea/
 .vscode/
+/outputs/
